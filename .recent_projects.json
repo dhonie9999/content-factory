@@ -1,0 +1,437 @@
+{
+  "mengapa katak melompat": {
+    "show_bible": {
+      "main_character": "Seorang narator yang ramah, dipadukan dengan penampilan visual katak sebagai protagonis utama yang menunjukkan aksi melompat.",
+      "visual_theme": "Gaya dokumenter alam dengan warna hijau segar, pencahayaan alami, macro shot pada kaki katak, serta animasi sederhana untuk menjelaskan mekanisme biomekanik.",
+      "mood": "Informatif, penasaran, dan penuh keajaiban, menjaga nada tetap ringan dan menghibur untuk penonton semua usia.",
+      "continuity_rules": "Gunakan palet warna hijau\u2011coklat konsisten, suara narator tetap sama sepanjang video, transisi fade\u2011in/out lembut, dan setiap adegan menampilkan teks judul sub\u2011topik yang sama formatnya.",
+      "title": "mengapa katak melompat",
+      "engine": "Auto AI / Universal (Default)",
+      "ratio": "Auto AI / 16:9 Landscape (Default)",
+      "duration_setting": "AI AUTO / Flexible (Default)",
+      "language_setting": "AI AUTO / Ikuti Input (Default)"
+    },
+    "scenes": [
+      {
+        "scene_num": 1,
+        "narration": "Selamat datang! Pernahkah Anda bertanya-tanya mengapa katak dapat melompat begitu tinggi? Mari kita selami rahasia di balik loncatan luar biasa mereka.",
+        "prompt_image": "**Prompt:**  \n\n*Documentary\u2011style cinematic frame, 16:9 landscape, ultra\u2011high\u2011resolution, vibrant fresh\u2011green and earthy\u2011brown color palette, soft natural daylight streaming through a dense rainforest canopy. In the foreground, a friendly narrator\u2011avatar (human\u2011like, smiling, wearing a casual field\u2011guide vest) is seamlessly merged with a vivid emerald tree\u2011frog protagonist. The frog is captured at the apex of a powerful leap, body elongated, motion\u2011blur tail\u2011like streak emphasizing speed. A macro close\u2011up dominates the lower third, revealing hyper\u2011detailed muscular hind\u2011legs, sinewy tendons, and webbed feet with visible skin texture, droplets of water glistening on the pads. Behind the frog, a shallow\u2011depth\u2011of\u2011field blur of lush foliage and mossy trunks creates a natural vignette. Simple, clean line\u2011animation overlays (transparent arrows and dotted vectors) illustrate biomechanical forces \u2013 spring\u2011like muscle contraction, lever action of the pelvis, and energy transfer to the legs. At the bottom of the frame, a consistent subtitle bar in clean sans\u2011serif font reads \u201cWhy Frogs Jump\u201d (title format identical across scenes). The whole scene features a gentle fade\u2011in transition, cinematic color grading with warm highlights and cool shadows, and a subtle filmic grain for a documentary feel.*",
+        "prompt_video": "**AI Video Prompt (English \u2013 Dynamic Motion & Camera Movement)**  \n\n**Title Card (0\u20113\u202fs)**  \n- Text: **\u201cWhy Do Frogs Jump?\u201d** (white bold font, lower\u2011third style, fades in)  \n- Background: Soft focus misty rainforest canopy, fresh green\u2011brown palette.  \n- Camera: Slow dolly\u2011in from wide to medium shot, natural light filtering through leaves.  \n- Audio: Friendly narrator voice (same throughout) says, \u201cWelcome! Have you ever wondered why frogs can leap so high? Let\u2019s dive into the secret behind their amazing jumps.\u201d\n\n---\n\n### Scene\u202f1 \u2013 \u201cMeet the Jumping Hero\u201d (3\u201112\u202fs)  \n- **Visual**: Anthropomorphic frog\u2011narrator (friendly smile, wearing a tiny explorer\u2019s hat) perched on a lily pad.  \n- **Camera**: 3\u2011sec **macro push\u2011in** on the frog\u2019s feet, then a **smooth 180\u00b0 orbit** around the frog as it looks up.  \n- **Motion**: Slight bobbing of water surface, subtle ripple animation.  \n- **Lighting**: Warm natural sunrise glow, green\u2011brown tones dominate.  \n- **Text Overlay** (lower\u2011third): **\u201cThe Frog \u2013 Nature\u2019s Little Acrobat\u201d** (fade\u2011in/out).  \n\n---\n\n### Scene\u202f2 \u2013 \u201cAnatomy of a Leap\u201d (12\u201125\u202fs)  \n- **Visual**: Transparent overlay showing frog\u2019s muscular legs and tendons (simple line\u2011animation, color\u2011coded).  \n- **Camera**: **Rapid dolly\u2011through** from the frog\u2019s torso to a **close\u2011up macro shot** of the hind\u2011leg muscles contracting. Follow with a **slow\u2011motion pull\u2011back** as the leg extends.  \n- **Motion**: Slow\u2011mo (120\u202ffps) of the leg springing, tiny particles of water splashing.  \n- **Lighting**: Soft rim\u2011light to highlight muscle fibers, maintaining green\u2011brown ambient.  \n- **Text Overlay** (center): **\u201cPowerful Muscles & Elastic Tendons\u201d** (fade\u2011in, stay 3\u202fs, fade\u2011out).  \n\n---\n\n### Scene\u202f3 \u2013 \u201cThe Physics of the Jump\u201d (25\u201138\u202fs)  \n- **Visual**: Simple 2\u2011D animated diagram of force vectors, spring\u2011mass model appearing beside the frog.  \n- **Camera**: **Side\u2011track** following the frog as it crouches, then **tilt\u2011up** to a **bird\u2011eye view** of the launch trajectory.  \n- **Motion**: Vector arrows animate outward as the frog pushes off, trajectory line arcs gracefully.  \n- **Lighting**: Consistent daylight, subtle lens flare for a magical feel.  \n- **Text Overlay** (top\u2011center): **\u201cConverting Muscle Energy \u2192 Kinetic Power\u201d** (fade\u2011in/out).  \n\n---\n\n### Scene\u202f4 \u2013 \u201cReal\u2011World Leap\u201d (38\u201155\u202fs)  \n- **Visual**: Live\u2011action\u2011style CGI frog leaping from a rock to a leaf, captured in **high\u2011speed slow motion**.  \n- **Camera**: **Steadicam follow\u2011shot** that **pushes forward** as the frog launches, then **smooth crane lift** as it reaches apex, ending with a **soft landing macro on the foot pads**.  \n- **Motion**: Water droplets freeze mid\u2011air, leaves rustle.  \n- **Lighting**: Dappled sunlight through canopy, preserving the green\u2011brown palette.  \n- **Text Overlay** (lower\u2011third): **\u201cUp to 20\u00d7 Body Length!\u201d** (fade\u2011in, hold 2\u202fs, fade\u2011out).  \n\n---\n\n### Scene\u202f5 \u2013 \u201cWhy It Matters\u201d (55\u201168\u202fs)  \n- **Visual**: Montage of frogs in various habitats (pond, forest floor, rain puddle) using jumps to escape predators, catch prey, and travel.  \n- **Camera**: **Quick cut\u2011to\u2011cut** with **smooth cross\u2011dissolves**, each clip begins with a **soft fade\u2011in** and ends with a **fade\u2011out**.  \n- **Motion**: Slight **time\u2011lapse** of a rainstorm, showing frogs reacting instantly.  \n- **Lighting**: Consistent natural tones, occasional golden hour glow.  \n- **Text Overlay** (center): **\u201cSurvival, Hunting, Exploration\u201d** (fade\u2011in/out).  \n\n---\n\n### Closing \u2013 \u201cThe Wonder Continues\u201d (68\u201175\u202fs)  \n- **Visual**: Frog\u2011narrator waves goodbye, jumps off-screen, leaving a sparkling trail that morphs into the title again.  \n- **Camera**: **Slow pull\u2011back** to a wide forest view, then a **gentle upward tilt** to the sky.  \n- **Motion**: Trail particles dissolve into floating leaf particles.  \n- **Lighting**: Soft twilight, maintaining green\u2011brown harmony.  \n- **Text Overlay** (center): **\u201cKeep Exploring Nature\u2019s Secrets!\u201d** (fade\u2011in, hold 3\u202fs, fade\u2011out).  \n- **Audio**: Narrator\u2019s closing line, \u201cThanks for joining our leap into science\u2014see you next adventure!\u201d  \n\n---\n\n### Global Continuity & Technical Specs  \n- **Aspect Ratio**: 16:9 landscape (auto\u2011AI).  \n- **Duration**: ~75\u202fseconds (flexible).  \n- **Color Palette**: Consistent fresh greens, earthy browns, occasional warm sunrise/sunset hues.  \n- **Transitions**: All cuts use soft **fade\u2011in/out** (0.5\u202fs).  \n- **Narration**: Single friendly voice\u2011over (English, maintains tone throughout).  \n- **Audio Bed**: Light ambient forest sounds, subtle upbeat instrumental (tempo ~100\u202fBPM).  \n- **Motion Style**: Dynamic camera moves (orbit, dolly, crane, tilt) combined with macro slow\u2011motion and simple 2\u2011D animations for biomechanical explanation.  \n\n**Prompt Ready for Runway Gen\u20112 / Luma Dream Machine / Kling AI**.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 2,
+        "narration": "Kaki katak bukan sekadar anggota tubuh; otot paha yang kuat dan tendon elastis menyimpan energi seperti pegas.",
+        "prompt_image": "**Prompt**\n\n> Ultra\u2011realistic macro cinematic shot of a vibrant green tree\u2011frog\u2019s hind leg, captured with a 100mm macro lens in a lush rainforest setting. The powerful thigh muscles are bulging and clearly defined, the elastic tendons are coiled like springs, and tiny droplets of dew sparkle on the skin. Soft, natural sunlight filters through the canopy, casting gentle, warm highlights and deep, earthy shadows that emphasize the fresh\u2011green and brown color palette. A subtle motion\u2011blur tail hints at an imminent jump, while a semi\u2011transparent infographic overlay traces the flow of energy from the muscle fibers through the tendons, with thin animated arrows and a faint spring\u2011like glow illustrating how the leg stores and releases kinetic energy.  \n> \n> At the bottom of the frame, a clean, sans\u2011serif subtitle bar (white text with a slight green tint) reads: **\u201cPowerful Thigh Muscles & Elastic Tendons: The Frog\u2019s Spring Mechanism\u201d** in the same format used throughout the video. The edges of the image fade gently in and out, matching the soft transition style of the documentary.  \n> \n> **Style & Technical Details:** photorealistic, macro photography, documentary\u2011nature aesthetic, cinematic lighting, vibrant fresh\u2011green and earthy\u2011brown tones, 16:9 landscape ratio, high\u2011resolution, depth\u2011of\u2011field shallow focus on the leg with background bokeh, subtle animated infographic elements, fade\u2011in/out edges, consistent narrator voice\u2011bubble silhouette in the corner (friendly, warm tone).  \n\n**Parameters (for Midjourney/Flux style):** `--ar 16:9 --v 5.2 --q 2 --style cinematic --detail high`",
+        "prompt_video": "**AI Video Generation Prompt (English \u2013 Dynamic Motion & Camera Movement)**  \n\n**Title:** *Mengapa Katak Melompat* \u2013 \u201cWhy Frogs Jump\u201d  \n\n**Overall Style & Mood**  \n- Nature\u2011documentary aesthetic with a fresh green\u2011brown palette (emerald foliage, earth\u2011tone soil).  \n- Soft natural daylight; golden\u2011hour fill light to highlight textures.  \n- Friendly, warm\u2011toned narrator voice (consistent throughout).  \n- Light\u2011hearted, inquisitive tone; suitable for all ages.  \n- Fade\u2011in at the start, fade\u2011out at the end; smooth fade\u2011to\u2011black transitions between scenes.  \n- Each segment opens with a **sub\u2011topic title** in the same lower\u2011third style: *\u201cBiomechanics of the Frog\u2019s Jump\u201d* (white text, thin green outline, placed at the bottom\u2011left).  \n\n---\n\n### Scene 1 \u2013 Opening Macro Introduction  \n**Camera:** Ultra\u2011macro lens, extreme close\u2011up on a bright\u2011green tree\u2011frog\u2019s hind\u2011leg. Slow push\u2011in from the ankle to the thigh, then a gentle 360\u00b0 dolly around the leg while maintaining focus.  \n**Motion:** Subtle depth\u2011of\u2011field pull\u2011focus from the skin texture to the underlying muscle fibers, revealing the powerful thigh.  \n**Visuals:** Dew droplets glistening, micro\u2011veins highlighted by soft back\u2011lighting.  \n**Narration (voice\u2011over):**  \n> \u201cThe frog\u2019s legs are not just limbs; the powerful thigh muscles and elastic tendons store energy like a spring.\u201d  \n**On\u2011Screen Text (title overlay):** *Biomechanics of the Frog\u2019s Jump* (same format as continuity rule).  \n\n---\n\n### Scene 2 \u2013 Energy Storage Animation  \n**Camera:** Transition with a soft fade\u2011to\u2011black, then a smooth cross\u2011fade into a 3\u2011D simple animation over the macro footage. Camera slowly rotates around a semi\u2011transparent frog leg model, zooming into the tendon.  \n**Motion:** Animated arrows illustrate \u201cenergy compression\u201d as the tendon stretches; a pulsing glow travels from muscle to tendon.  \n**Visuals:** Green\u2011brown schematic colors matching the palette; minimalistic line art.  \n**Narration:**  \n> \u201cWhen a frog prepares to leap, its thigh muscles contract, pulling the elastic tendon like a coiled spring.\u201d  \n\n---\n\n### Scene 3 \u2013 The Launch \u2013 Slow\u2011Motion Jump  \n**Camera:** Wide\u2011angle shot of a pond edge, frog perched on a leaf. Start with a low\u2011angle dolly forward as the frog crouches, then a rapid upward crane\u2011track following the launch.  \n**Motion:** Capture the jump in ultra\u2011slow motion (120\u2011fps) to emphasize the rapid extension of the legs. The camera tracks the frog\u2019s arc, maintaining the green\u2011brown background.  \n**Visuals:** Sunlight filtering through canopy, highlighting the frog\u2019s bright skin against mossy brown.  \n**Narration:**  \n> \u201cAt the moment of release, the stored spring\u2011like energy is unleashed, propelling the frog upward and forward in a single, powerful burst.\u201d  \n\n---\n\n### Scene 4 \u2013 Landing & Energy Dissipation (Macro Follow\u2011Through)  \n**Camera:** Quick cut to a macro shot of the landing foot contacting a leaf. Use a rapid push\u2011in followed by a smooth pull\u2011back to reveal the impact.  \n**Motion:** Slight camera shake synchronized with the footfall, then a gentle steady\u2011cam glide as the frog settles.  \n**Visuals:** Leaf flexes, tiny particles of water splash; macro depth shows the tendon recoiling.  \n**Narration:**  \n> \u201cThe tendon rebounds, and the frog\u2019s body absorbs the shock, readying the muscles for the next leap.\u201d  \n\n---\n\n### Scene 5 \u2013 Closing Summary & Call\u2011to\u2011Curiosity  \n**Camera:** Slow aerial dolly over the lush wetland, fading into a soft focus of the frog perched again, eyes bright.  \n**Motion:** Gentle forward glide that ends with a slight tilt up, revealing the sky.  \n**Visuals:** Consistent green\u2011brown tones, natural lighting, faint bokeh of distant foliage.  \n**Narration:**  \n> \u201cFrom powerful thighs to spring\u2011like tendons, every jump is a marvel of nature\u2019s engineering. And that\u2019s why frogs leap\u2014so they can explore, escape, and thrive.\u201d  \n**On\u2011Screen Text (final title overlay):** *Why Frogs Jump \u2013 The Magic of Biomechanics*  \n\n---\n\n### Technical Settings (for the AI engine)  \n- **Engine:** Auto AI / Universal (Default)  \n- **Aspect Ratio:** 16:9 Landscape (Auto)  \n- **Duration:** Flexible \u2013 approx. 45\u201160 seconds total (auto\u2011adjusted to fit each scene).  \n- **Language:** English narration (voice\u2011over) with Indonesian title text as shown.  \n- **Color Palette:** Dominant fresh greens (#6FAF5C, #A8D08D) with earthy browns (#7B5A3C, #A58F7D).  \n- **Lighting:** Natural daylight, soft fill, slight rim light for muscle definition.  \n- **Transitions:** Soft fade\u2011in/out between scenes; maintain continuity of narrator voice and sub\u2011topic title style.  \n\n**Prompt Ready for Runway Gen\u20112 / Luma Dream Machine / Kling AI:**  \n\n```\nDocumentary\u2011style nature video, fresh green\u2011brown palette, natural daylight. \nScene 1: ultra\u2011macro close\u2011up of a bright\u2011green tree\u2011frog\u2019s hind leg, slow push\u2011in from ankle to thigh, 360\u00b0 dolly, depth\u2011of\u2011field pull\u2011focus from skin to muscle fibers, dewdrops glistening, soft back\u2011light. \nNarration (friendly warm voice): \"The frog\u2019s legs are not just limbs; the powerful thigh muscles and elastic tendons store energy like a spring.\" \nOverlay lower\u2011third title: \"Biomechanics of the Frog\u2019s Jump\" (white text, thin green outline, bottom\u2011left). \nFade transition. \nScene 2: simple 3\u2011D animation over macro footage, camera rotates around semi\u2011transparent leg model, animated arrows showing tendon stretch, pulsing glow from muscle to tendon, green\u2011brown schematic colors. \nNarration: \"When a frog prepares to leap, its thigh muscles contract, pulling the elastic tendon like a coiled spring.\" \nFade transition. \nScene 3: wide\u2011angle pond edge, frog on leaf, low\u2011angle dolly forward as frog crouches, rapid upward crane\u2011track following launch, ultra\u2011slow\u2011motion (120\u202ffps) of leg extension, sun\u2011dappled background. \nNarration: \"At the moment of release, the stored spring\u2011like energy is unleashed, propelling the frog upward and forward in a single, powerful burst.\" \nScene 4: macro landing foot on leaf, quick push\u2011in then pull\u2011back, slight synchronized camera shake at impact, leaf flexes, tendon recoils visible. \nNarration: \"The tendon rebounds, and the frog\u2019s body absorbs the shock, readying the muscles for the next leap.\" \nScene 5: slow aerial dolly over wetland, gentle forward glide, tilt up to sky, frog perched with bright eyes. \nNarration: \"From powerful thighs to spring\u2011like tendons, every jump is a marvel of nature\u2019s engineering. And that\u2019s why frogs leap\u2014so they can explore, escape, and thrive.\" \nFinal overlay title: \"Why Frogs Jump \u2013 The Magic of Biomechanics\". \nAll scenes use soft fade\u2011in/out transitions, consistent narrator voice, same lower\u2011third title style, fresh green\u2011brown colors, natural lighting. 16:9, flexible length ~45\u201160\u202fs. \n```\n\nFeel free to copy\u2011paste the block above into your AI video generator. Adjust timing or camera speeds as needed while keeping the continuity rules intact. Happy filming!",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 3,
+        "narration": "Secara evolusi, kemampuan melompat membantu katak melarikan diri dari predator dan berpindah ke kolam dengan cepat.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 4,
+        "narration": "Saat katak menekuk kaki, tendon menegang; kemudian secara tiba\u2011tiba otot memicu pelepasan, menghasilkan gaya dorong yang mengangkat tubuhnya hingga lima kali panjang tubuh.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 5,
+        "narration": "Berbagai spesies memiliki gaya melompat berbeda: katak pohon dapat melompat hingga 30 kali panjang tubuhnya, sementara katak air melompat lebih pendek namun lebih kuat.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 6,
+        "narration": "Faktor lingkungan seperti suhu dan kelembapan memengaruhi kekuatan otot; pada suhu hangat, otot bekerja lebih efisien sehingga lompatan menjadi lebih jauh.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 7,
+        "narration": "Peneliti menggunakan platform tekanan dan video berkecepatan tinggi untuk mengukur gaya dorong serta sudut peluncuran katak dalam laboratorium.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 8,
+        "narration": "Fakta menarik: katak dapat mengubah arah lompatan di udara dengan menggerakkan kaki belakang, memungkinkan mereka menghindari rintangan secara dinamis.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 9,
+        "narration": "Jadi, kombinasi anatomi khusus, evolusi adaptif, dan kondisi lingkungan menjadikan katak sang pelompat alam yang luar biasa.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 10,
+        "narration": "Terima kasih telah menonton! Jangan lupa beri like dan subscribe untuk lebih banyak fakta unik dari dunia hewan.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      }
+    ],
+    "timestamp": "2026-09-30 11:49"
+  },
+  "tembok besar China": {
+    "show_bible": {
+      "main_character": "Narator (suara lembut dan informatif)",
+      "visual_theme": "Cinematic Photorealistic, 8K, moody lighting, 35mm lens, warna hangat dengan kontras tinggi",
+      "mood": "Kagum, penasaran, hormat terhadap warisan budaya",
+      "continuity_rules": "Gunakan grading warna konsisten, transisi fade atau dissolve, sudut kamera 35mm tetap, narasi suara tetap tanpa perubahan aksen, urutan kronologis sejarah",
+      "title": "tembok besar China",
+      "engine": "Auto AI / Universal (Default)",
+      "ratio": "Auto AI / 16:9 Landscape (Default)",
+      "duration_setting": "",
+      "language_setting": "Bahasa Indonesia"
+    },
+    "scenes": [
+      {
+        "scene_num": 1,
+        "narration": "Selamat datang dalam perjalanan menakjubkan menelusuri Tembok Besar China, salah satu keajaiban dunia yang paling ikonik.",
+        "prompt_image": "A breathtaking cinematic photorealistic view of the Great Wall of China winding over misty mountains at sunrise, warm golden light bathing the ancient stone, high\u2011contrast shadows, dramatic clouds swirling in the sky, detailed texture of bricks and watchtowers, atmospheric moody lighting, 35mm lens perspective with deep depth of field, 8K resolution, vivid warm color grading, composition emphasizing leading lines of the wall disappearing into the horizon.",
+        "prompt_video": "35mm lens, 8K photorealistic, warm high\u2011contrast moody lighting; start with a slow aerial crane pull\u2011back from mist\u2011filled peaks to reveal the Great Wall winding across the horizon, then transition to a ground\u2011level dolly forward along the wall at a steady 1.5\u202fm/s, tracking left\u2011to\u2011right while a gentle pan follows the curvature, shallow depth of field keeps the wall sharp against a soft sunrise glow, ending with a smooth fade\u2011in from black.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 2,
+        "narration": "Tembok ini bermula pada abad ke-7 SM, ketika kerajaan-kerajaan kuno membangun pertahanan awal untuk melindungi wilayah mereka.",
+        "prompt_image": "Cinematic photorealistic 8K scene captured with a 35mm lens, warm high\u2011contrast lighting, wide 16:9 landscape: an early segment of the Great Wall in the 7th\u202fcentury\u202fBC, built by ancient Chinese kingdoms. Rugged limestone foundations rise from mist\u2011shrouded mountains, interwoven with primitive earthworks and wooden palisades. A small group of bronze\u2011armed soldiers in period armor stands watch on a stone watchtower, their silhouettes illuminated by the low, golden sun breaking through thin clouds. Dusty earth, weathered stones, and distant pine\u2011covered peaks create a moody, awe\u2011inspiring atmosphere that conveys the nascent defensive spirit of the era.",
+        "prompt_video": "",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 3,
+        "narration": "Selama Dinasti Qin, Kaisar Qin Shi Huang menyatukan segmen-segmen lama dan menambahkan ribuan kilometer batu, menciptakan struktur terpanjang pada masanya.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 4,
+        "narration": "Konstruksi menggunakan batu kapur, batu gamping, tanah liat dan kayu, dengan teknik pengikatan khusus yang memungkinkan dinding menahan gempa dan cuaca ekstrem.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 5,
+        "narration": "Strategi pertahanan Tembok meliputi menara pengintai, pos pasukan, dan jalur komunikasi sinyal asap, menjadikannya jaringan militer yang sangat efektif.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 6,
+        "narration": "Di sepanjang Tembok, komunitas petani, pedagang, dan tentara hidup berdampingan, menciptakan budaya unik yang masih dapat dirasakan hingga kini.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 7,
+        "narration": "Sebagai warisan budaya UNESCO, Tembok Besar tidak hanya simbol kekuatan militer, tetapi juga lambang persatuan dan tekad bangsa China.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 8,
+        "narration": "Terima kasih telah menyaksikan. Jelajahi lebih banyak fakta menakjubkan tentang dunia kita, dan biarkan rasa ingin tahu Anda terus melangkah maju.",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      }
+    ],
+    "timestamp": "2026-09-30 11:59"
+  },
+  "menara eiffel": {
+    "show_bible": {
+      "main_character": "Narator",
+      "visual_theme": "Cinematic Photorealistic, 8K, moody lighting, 35mm lens; focus on Eiffel Tower and Paris skyline",
+      "mood": "Informative, awe\u2011inspiring, slightly nostalgic",
+      "continuity_rules": "Consistent color grading, smooth 6\u2011second cuts, 16:9 landscape, establishing shots followed by close\u2011ups, no abrupt lighting changes",
+      "title": "menara eiffel",
+      "engine": "Auto AI / Universal (Default)",
+      "ratio": "Auto AI / 16:9 Landscape (Default)",
+      "duration_setting": "6 detik",
+      "language_setting": "AI AUTO / Ikuti Input (Default)",
+      "voice_setting": "AI AUTO / Adaptif (Default)"
+    },
+    "scenes": [
+      {
+        "scene_num": 1,
+        "narration": "Selamat datang di menara paling ikonik di dunia, Menara Eiffel.",
+        "dialogue": "",
+        "prompt_image": "Ultra\u2011realistic 8K cinematic photograph, 16:9 landscape, moody golden\u2011hour lighting, shot with a 35mm lens, low\u2011angle view emphasizing the Eiffel Tower soaring against a pastel\u2011toned Paris skyline, soft haze and gentle lens flare adding nostalgic atmosphere; in the foreground stands a charismatic Indonesian male narrator in his early 30s, smart\u2011casual blazer, slight awe\u2011filled smile, eyes gazing upward at the tower, right hand resting on a vintage leather notebook, shallow depth of field blending the intricate iron lattice of the Eiffel Tower into the background, warm\u2011toned consistent color grading, cinematic filmic mood.",
+        "prompt_video": "Scene 1 (6\u202fseconds, 16:9, 8K, cinematic photorealistic, moody lighting, 35mm lens)\n\n- **Camera**: Begin with a wide establishing shot of the Paris skyline at twilight, the sky painted in deep indigo with soft orange\u2011pink horizon glow. Slowly dolly forward while subtly tilting upward to reveal the Eiffel Tower\u2019s iron lattice bathed in a gentle amber wash. The movement is smooth, lasting the full 6\u202fseconds, with a slight push\u2011in during the last 2\u202fseconds to transition to a medium close\u2011up of the tower\u2019s top arch. Keep color grading consistent: muted blues, warm amber highlights, low\u2011contrast shadows.\n\n- **Physical Action / Visual Details**: Light clouds drift lazily across the sky; distant city lights begin to flicker. A faint breeze causes the tower\u2019s flag to ripple. No characters on screen, only the monument and skyline.\n\n- **Audio**  \n  - **Voiceover** (narration):  \n    `Voiceover (0.5\u202fs\u202f\u2192\u202f5.5\u202fs, calm, slightly nostalgic tone, clear Indonesian): \"Selamat datang di menara paling ikonik di dunia, Menara Eiffel.\"`  \n    The voice fades in at 0.5\u202fseconds, stays steady, and fades out by 5.5\u202fseconds, matching the visual emphasis on the tower.\n\n- **Soundscape**: Subtle ambient city hum, distant traffic, and a soft orchestral pad that swells gently with the voiceover, ending with a faint chime as the camera locks onto the tower\u2019s pinnacle.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 2,
+        "narration": "Dibangun untuk Exposition Universelle 1889, menara ini dirancang oleh Gustave Eiffel.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 3,
+        "narration": "Pembangunan dimulai pada Januari 1887 dan selesai dalam waktu dua tahun, satu bulan, lima hari.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 4,
+        "narration": "Dengan tinggi 324 meter, menara terdiri dari 18.038 bagian logam yang dihubungkan oleh 2,5 juta rivet.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 5,
+        "narration": "Setiap tahun, lebih dari 7 juta pengunjung naik ke puncaknya, menjadikannya destinasi wisata terpopuler.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 6,
+        "narration": "Menara Eiffel menjadi simbol kebebasan, seni, dan inovasi, muncul dalam ribuan film dan karya seni.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 7,
+        "narration": "Setiap malam, menara dipenuhi ribuan lampu LED yang menyinari Paris selama lima menit setiap jam.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 8,
+        "narration": "Awalnya, menara direncanakan untuk dibongkar setelah 20 tahun, namun diselamatkan karena fungsi sebagai menara radio.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 9,
+        "narration": "Kini, menara menggunakan sistem energi terbarukan untuk mengurangi jejak karbon.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      },
+      {
+        "scene_num": 10,
+        "narration": "Itulah sekilas fakta unik Menara Eiffel, sebuah keajaiban teknik yang terus memukau dunia.",
+        "dialogue": "",
+        "prompt_image": "",
+        "prompt_video": "",
+        "is_unlocked": false
+      }
+    ],
+    "timestamp": "2026-09-30 12:14"
+  },
+  "tugu monas ": {
+    "show_bible": {
+      "main_character": "Monumen Nasional (Monas) sebagai simbol kebanggaan dan sejarah Indonesia",
+      "visual_theme": "Gaya sinematik dengan aerial shots, time\u2011lapse matahari terbit/terbenam, close\u2011up detail arsitektur, serta arsip foto historis dipadukan warna hangat dan kontras tinggi",
+      "mood": "Inspiratif, edukatif, dan penuh rasa hormat",
+      "continuity_rules": "Warna grading konsisten, transisi halus antar adegan, durasi tiap adegan 6 detik, narasi voiceover berbahasa Indonesia tanpa dialog karakter",
+      "title": "tugu monas ",
+      "engine": "Auto AI / Universal (Default)",
+      "ratio": "Auto AI / 16:9 Landscape (Default)",
+      "duration_setting": "6 Detik per Adegan",
+      "language_setting": "Bahasa Indonesia",
+      "voice_setting": "Narasi / Voiceover Only"
+    },
+    "scenes": [
+      {
+        "scene_num": 1,
+        "narration": "Di ufuk timur, cahaya pertama menyinari siluet megah Monumen Nasional, menandai kebanggaan ibu kota.",
+        "dialogue": "",
+        "prompt_image": "Aerial cinematic shot of Monumen Nasional (Monas) at sunrise, eastern horizon bathed in the first golden light, silhouette of the towering obelisk illuminated against a warm, high\u2011contrast sky with soft clouds and subtle lens flare, detailed architectural texture, dramatic color grading, 16:9 landscape.",
+        "prompt_video": "Scene 1 \u2013 6\u202fseconds  \n**Visual**: Begin with a slow aerial dolly\u2011in from the eastern horizon at pre\u2011dawn. The camera glides forward over mist\u2011filled Jakarta, revealing the faint silhouette of Monumen Nasional. As the first rays of sunrise break, execute a subtle time\u2011lapse that brightens the sky, gradually unveiling the monument\u2019s full form. At 4\u202fs, cut to a smooth 2\u2011second close\u2011up tracking shot that sweeps along the marble base, emphasizing the intricate reliefs with warm, high\u2011contrast grading.  \n\n**Audio**:  \n- **Voiceover (0.5\u202fs\u202f\u2013\u202f5.5\u202fs)**: \u201cDi ufuk timur, cahaya pertama menyinari siluet megah Monumen Nasional, menandai kebanggaan ibu kota.\u201d  \n- Background ambient: soft morning breeze and distant city hum, fading in at 0\u202fs and persisting under the voiceover.  \n\n**Transition**: Fade to black at 5.9\u202fs, preparing for the next scene.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 2,
+        "narration": "Monas dirancang oleh Presiden Sukarno pada tahun 1961, dan selesai dibangun pada 1975 sebagai lambang kemerdekaan.",
+        "dialogue": "",
+        "prompt_image": "A cinematic aerial view of Monumen Nasional (Monas) in Jakarta at sunrise, warm golden light bathing the marble obelisk and shining gold flame, high\u2011contrast, ultra\u2011realistic detail of the architectural columns and ornamental reliefs, with a subtle, semi\u2011transparent overlay of a historic black\u2011and\u2011white photo of President Sukarno holding the monument\u2019s design plans, blended seamlessly into the scene, cinematic color grading, 16:9 landscape.",
+        "prompt_video": "Scene 2 \u2013 6 seconds  \n\nVisual: Begin with a smooth aerial dolly\u2011in over the Jakarta skyline at dawn, the sun just cresting the horizon, casting warm golden light. The camera glides forward toward Monumen Nasional, transitioning into a slow 3\u2011second time\u2011lapse that compresses the sunrise clouds swirling above the monument. At second\u202f3, cut to a tight, high\u2011contrast close\u2011up of the marble reliefs at the base, highlighting intricate historic details as the light sweeps across them. End with a subtle tilt\u2011up revealing the full height of Monas against the brightening sky.  \n\nCamera Motion & Timing:  \n- 0.0\u20112.0\u202fs: Aerial dolly\u2011in (wide shot) moving forward at a steady pace.  \n- 2.0\u20115.0\u202fs: Time\u2011lapse of sunrise, slight forward push, maintaining the monument centered.  \n- 5.0\u20116.0\u202fs: Quick close\u2011up tilt\u2011up to the summit, ending on the flag fluttering.  \n\nAudio:  \n- Voiceover (starts at 0.5\u202fs, continues until 5.5\u202fs): \u201cMonas dirancang oleh Presiden Sukarno pada tahun 1961, dan selesai dibangun pada 1975 sebagai lambang kemerdekaan.\u201d  \n\nNo character dialogue.  \n\nColor grading: Warm tones, high contrast, consistent with previous scene.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 3,
+        "narration": "Dengan tinggi 132 meter, puncaknya menampung obor emas yang melambangkan semangat perjuangan bangsa.",
+        "dialogue": "",
+        "prompt_image": "A cinematic aerial view of Jakarta\u2019s Monumen Nasional at sunset, towering 132\u202fmeters tall, with a radiant golden torch flame blazing at its pinnacle, warm high\u2011contrast lighting, detailed marble columns and observation deck clearly visible, soft time\u2011lapse sky with sun rays spilling over the city, ultra\u2011realistic texture, cinematic color grading, 16:9 landscape.",
+        "prompt_video": "**Scene 3 \u2013 6\u202fseconds**\n\n- **Visual**: Begin with a smooth aerial dolly\u2011in from the base of Monumen Nasional toward the summit as the early morning light glows. At 0\u20112\u202fs, a time\u2011lapse of the sunrise sweeps across the sky, casting warm amber tones. From 2\u20114\u202fs, the camera tilts upward to reveal the golden obor perched at the 132\u2011meter pinnacle, its flame shimmering with high\u2011contrast highlights. From 4\u20116\u202fs, a tight close\u2011up rotates around the obor, emphasizing its radiant detail while the background city blurs softly.\n\n- **Camera Motion**:  \n  *0\u20112\u202fs*: steady aerial forward push (speed\u202f\u2248\u202f0.5\u202fm/s).  \n  *2\u20114\u202fs*: gentle upward tilt (15\u00b0) synced with sunrise progression.  \n  *4\u20116\u202fs*: 360\u00b0 slow orbit around the obor (rotation\u202f\u2248\u202f30\u00b0/s), maintaining focus on the flame.\n\n- **Audio**:  \n  `Voiceover (0.5\u202fs \u2192 5.5\u202fs): \"Dengan tinggi 132 meter, puncaknya menampung obor emas yang melambangkan semangat perjuangan bangsa.\"`  \n  \u2013 Voiceover starts 0.5\u202fs after the visual opens, delivered in a calm, reverent tone, with a subtle fade\u2011in at 0.5\u202fs and fade\u2011out at 5.5\u202fs. No background music is required for this prompt.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 4,
+        "narration": "Bentuknya yang menyerupai lingkaran api menyiratkan persatuan, kesatuan, dan semangat yang tak pernah padam.",
+        "dialogue": "",
+        "prompt_image": "A dramatic aerial view of Monumen Nasional (Monas) at sunset, focusing on the flame\u2011shaped golden sphere atop the tower that resembles a glowing circle of fire, radiating warm orange\u2011red light symbolizing unity and unending spirit, high\u2011contrast cinematic lighting, warm color grading, detailed architectural textures, soft bokeh of Jakarta skyline in the background, 16:9 landscape, ultra\u2011realistic, photorealistic, with a subtle time\u2011lapse glow effect.",
+        "prompt_video": "Scene 4 \u2013 6\u202fseconds  \n- Visual: Warm\u2011toned high\u2011contrast aerial dolly\u2011in on Monumen Nasional, beginning with a wide sunrise time\u2011lapse that reveals the golden sky. The camera glides forward, transitioning to a smooth crane\u2011up that circles the obelisk, then tightens to a close\u2011up of the flame\u2011shaped pinnacle, emphasizing its radiant contours. Subtle overlay of archival black\u2011and\u2011white photos of the monument fades in the background, merging into the present view.  \n- Camera Motion: Start with a slow aerial push\u2011in (0\u20112\u202fs), then a 180\u00b0 orbital sweep around the tower (2\u20114\u202fs), followed by a rapid crane\u2011up to the flame tip (4\u20115\u202fs) and a final steady close\u2011up hold (5\u20116\u202fs).  \n- Audio:  \n  - Voiceover (0:00\u20110:06): \u201cBentuknya yang menyerupai lingkaran api menyiratkan persatuan, kesatuan, dan semangat yang tak pernah padam.\u201d  \n- No dialogue.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 5,
+        "narration": "Lebih dari 35.000 pekerja terlibat, menggunakan 5.000 ton baja untuk menciptakan struktur yang kokoh.",
+        "dialogue": "",
+        "prompt_image": "A sweeping aerial cinematic shot of the Monumen Nasional construction site at golden hour, showing thousands of workers in coordinated motion around towering steel frameworks, massive piles of gleaming steel beams labeled \u201c5,000 tons\u201d being hoisted by cranes, dust and sunrise light creating dramatic high\u2011contrast shadows, warm color grading with rich amber tones, ultra\u2011realistic detail, shallow depth of field on foreground workers, wide\u2011angle 16:9 landscape, cinematic film grain and subtle motion blur to suggest a time\u2011lapse of relentless effort.",
+        "prompt_video": "**Scene 5 \u2013 6\u202fseconds**\n\n- **Visual & Camera Motion**  \n  0\u20111\u202fs: A high\u2011altitude aerial shot sweeps over the Monas site at sunrise, the sky warm\u2011golden, establishing the massive construction area.  \n  1\u20113\u202fs: The camera glides forward on a virtual crane track, descending toward the steel skeleton of the monument; the frame slowly rotates 15\u00b0 to reveal the lattice of beams.  \n  3\u20115\u202fs: A tight, slow\u2011push close\u2011up on riveted steel columns and the hands of workers tightening bolts; dust particles catch the light, emphasizing the weight of the material.  \n  5\u20116\u202fs: The shot holds on the gleaming steel as the background soft\u2011fades to a subtle vignette, preparing for the next scene.\n\n- **Audio Timing**  \n  - **Voiceover (Narration, Bahasa Indonesia):**  \n    `Voiceover (0.5\u202fs \u2013 5.5\u202fs): \"Lebih dari 35.000 pekerja terlibat, menggunakan 5.000 ton baja untuk menciptakan struktur yang kokoh.\"`  \n\n- **Additional Notes**  \n  - Color grading: warm sunrise tones with high contrast to accentuate steel texture.  \n  - No character dialogue; only the narrated voiceover as specified.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 6,
+        "narration": "Naik ke dek observasi, pengunjung dapat menyaksikan panorama Jakarta yang menakjubkan dari ketinggian.",
+        "dialogue": "",
+        "prompt_image": "A cinematic, high\u2011contrast 16:9 shot taken from the observation deck of Monumen Nasional (Monas) at sunrise, looking out over a sweeping panoramic view of Jakarta\u2019s skyline; warm golden light bathes the city\u2019s modern towers, historic rooftops, and the distant sea, with subtle time\u2011lapse clouds streaking across the sky, detailed architectural elements of the monument visible in the foreground, shallow depth of field emphasizing the visitor\u2019s perspective, vibrant yet balanced color grading.",
+        "prompt_video": "Scene\u202f6 \u2013 6\u202fseconds  \nVisual: Begin with the elevator doors of Monas opening (0\u20111\u202fs). The camera follows a visitor stepping onto the observation deck, then lifts vertically to the deck\u2019s railing (1\u20112\u202fs). At 2\u202fs, execute a smooth 180\u00b0 pan left\u2011to\u2011right, revealing a sweeping, high\u2011contrast panorama of Jakarta\u2019s skyline bathed in warm golden\u2011hour light; subtle time\u2011lapse clouds drift across the horizon until the end of the shot (2\u20116\u202fs). Maintain cinematic color grading with rich warm tones and crisp detail on the tower\u2019s architecture.  \n\nVoiceover: \u201cNaik ke dek observasi, pengunjung dapat menyaksikan panorama Jakarta yang menakjubkan dari ketinggian.\u201d (starts at 0.5\u202fs, fades out by 5.5\u202fs).",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 7,
+        "narration": "Di sekeliling Monas terdapat taman seluas 80 hektar, lengkap dengan museum sejarah dan galeri seni.",
+        "dialogue": "",
+        "prompt_image": "A breathtaking aerial cinematic shot of Monumen Nasional (Monas) standing proudly at the center of an expansive 80\u2011hectare park, captured in golden\u2011hour light with warm, high\u2011contrast grading. The scene shows lush, meticulously landscaped gardens radiating outward, dotted with winding pathways, families strolling, and trees swaying gently. To the left of the monument, a sleek, modern history museum with glass fa\u00e7ades reflects the sunrise, while nearby a contemporary art gallery with bold geometric lines showcases illuminated installations. Soft motion blur of passing clouds creates a subtle time\u2011lapse effect, emphasizing the serene yet dynamic atmosphere. Ultra\u2011wide angle, ultra\u2011realistic detail, cinematic depth of field, vibrant colors, and crisp architectural textures.",
+        "prompt_video": "Scene 7 \u2013 6\u202fseconds  \n\n**Visuals & Camera Motion**  \n- 0.0\u20112.0\u202fs: A high\u2011altitude aerial shot begins over the Jakarta skyline at sunrise, the warm golden light bathing the city. The camera glides smoothly forward, revealing the slender silhouette of Monumen Nasional (Monas) centered in a vast green expanse.  \n- 2.0\u20114.0\u202fs: The drone descends in a slow, steady dolly\u2011down while simultaneously rotating 30\u00b0 to the right, exposing the full 80\u2011hectare park that encircles the monument. Lush trees, winding pathways, and scattered visitors are visible.  \n- 4.0\u20115.5\u202fs: A seamless transition (soft dissolve) to a ground\u2011level tracking shot that sweeps past the historic museum building, highlighting its colonial\u2011style fa\u00e7ade and the modern art gallery entrance. The camera glides left\u2011to\u2011right, keeping the museum in sharp focus while the park blurs gently in the background.  \n- 5.5\u20116.0\u202fs: A brief tight\u2011up on the museum\u2019s engraved plaque, the text subtly illuminated by the warm sunrise, then a quick fade to black.\n\n**Color & Mood**  \n- Consistent high\u2011contrast, warm\u2011tone grading (golden\u2011orange highlights, deep teal shadows) to maintain inspirational and respectful atmosphere.  \n- Light flares from the sunrise add a soft, cinematic glow.\n\n**Audio Timing**  \n- **Voiceover (Narration):** \u201cDi sekeliling Monas terdapat taman seluas 80 hektar, lengkap dengan museum sejarah dan galeri seni.\u201d  \n  - Starts at 0.5\u202fs, delivered in clear Bahasa Indonesia with a calm, reverent male voice, continues uninterrupted until 5.5\u202fs, then fades out with the visual fade.  \n\nNo character dialogue.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 8,
+        "narration": "Saat malam tiba, lampu LED menebarkan cahaya biru, sementara obor berkilau menambah keindahan kota.",
+        "dialogue": "",
+        "prompt_image": "Aerial night view of Monumen Nasional bathed in cool blue LED illumination, the tower\u2019s sleek silhouette highlighted against a deep indigo sky, while surrounding streets sparkle with warm golden torch flames, high\u2011contrast cinematic lighting, ultra\u2011realistic details, subtle lens flares, vibrant blue and amber color grading, 16:9 landscape, photorealistic, dramatic yet respectful atmosphere.",
+        "prompt_video": "**Scene 8 \u2013 6 seconds**\n\n- **Visual**: Night aerial shot of Monumen Nasional illuminated by sweeping blue LED lights. The camera begins with a wide establishing view of the city skyline, then slowly tracks forward toward the monument, revealing sparkling torches lining the surrounding plaza. Warm, high\u2011contrast grading emphasizes the blue glow and the golden flicker of the torches, maintaining the consistent color palette of the series.\n\n- **Camera Motion**: Start with a 2\u2011second aerial crane pull\u2011back (wide \u2192 medium), then a smooth 3\u2011second dolly\u2011in toward the base of Monas while tilting slightly upward to capture the full height. End with a 1\u2011second steady close\u2011up on the LED\u2011lit obelisk surface as the torches sparkle.\n\n- **Audio Timing**:\n  - **Voiceover (0.5\u202fs\u202f\u2013\u202f5.5\u202fs)**: \u201cSaat malam tiba, lampu LED menebarkan cahaya biru, sementara obor berkilau menambah keindahan kota.\u201d\n  - No dialogue.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 9,
+        "narration": "Setiap 17 Agustus, Monas menjadi panggung utama upacara kemerdekaan, meneguhkan makna historisnya.",
+        "dialogue": "",
+        "prompt_image": "Aerial cinematic view of Monumen Nasional in Jakarta during the 17\u202fAugust Independence Day ceremony, golden sunrise lighting, crowds gathered at the base, Indonesian flags waving, ceremonial troops and marching band, fireworks blooming in the sky, warm high\u2011contrast color grading, detailed close\u2011up of the obelisk\u2019s architecture, shallow depth of field, 16:9 landscape.",
+        "prompt_video": "Scene 9 (6\u202fseconds):  \n- **Camera**: Begin with a low, slow dolly\u2011in from the base of Monas toward the summit, then transition to a sweeping 180\u00b0 aerial orbit at 30\u202fm altitude, ending with a tight crane\u2011up that reveals the flagpole illuminated against the twilight sky.  \n- **Visuals**: Warm\u2011toned high\u2011contrast color grade; subtle lens flare from the setting sun; gentle dust particles catching the light.  \n- **Action**: Crowds in ceremonial uniforms line the plaza, flags fluttering; the camera captures the synchronized movement of the crowd as the focus lifts to the illuminated monument.  \n- **Audio Timing**:  \n  - **Voiceover (0:00\u20116:00)**: \u201cSetiap 17 Agustus, Monas menjadi panggung utama upacara kemerdekaan, meneguhkan makna historisnya.\u201d  \n- **No dialogue**.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 10,
+        "narration": "Monumen Nasional tetap menjadi saksi bisu perjalanan Indonesia, menginspirasi generasi untuk terus maju.",
+        "dialogue": "",
+        "prompt_image": "A sweeping aerial shot of Monumen Nasional at golden hour, the sun low behind the obelisk casting warm, high\u2011contrast light across its marble surface, subtle motion\u2011blur streaks hinting at a time\u2011lapse, detailed close\u2011up texture of the monument\u2019s stone, soft pastel clouds drifting, silhouettes of diverse young people standing in the foreground gazing upward in awe, cinematic ultra\u2011realistic style, vibrant warm color grading, 16:9 landscape.",
+        "prompt_video": "**Scene 10 \u2013 6\u202fseconds**\n\n- **Visual:** Begin with a tight close\u2011up of the gold\u2011glinting flame at the tip of Monas, then a smooth 3\u2011second crane\u2011up to reveal the full tower silhouetted against a vibrant sunset sky. As the camera continues to pull back (seconds\u202f3\u20116), a subtle time\u2011lapse of the sun setting behind the tower adds warm, high\u2011contrast colors, while faint overlay of historic black\u2011and\u2011white photos of the monument fades in and out around the edges, emphasizing legacy.\n\n- **Camera Motion:**  \n  - 0.0\u20113.0\u202fs: Crane\u2011up from flame to full tower, slight dolly\u2011out (2\u202fm) while maintaining a steady forward tilt.  \n  - 3.0\u20116.0\u202fs: Continuous dolly\u2011out (additional 3\u202fm) with a gentle orbit to the right, ending with the tower centered in the frame and the horizon glowing.\n\n- **Audio Timing:**  \n  - **Voiceover (0.5\u202fs\u202f\u2013\u202f5.5\u202fs):** \u201cMonumen Nasional tetap menjadi saksi bisu perjalanan Indonesia, menginspirasi generasi untuk terus maju.\u201d  \n  - No dialogue (Lip\u2011Sync) required.",
+        "is_unlocked": true
+      }
+    ],
+    "timestamp": "2026-09-30 12:43"
+  },
+  "tembok besar china": {
+    "show_bible": {
+      "main_character": "Keluarga Li (Mei, ibunya, ayah)",
+      "visual_theme": "Cinematic photorealistic, moody lighting, 35mm lens, 8K vertical",
+      "mood": "Melankolis namun penuh harapan",
+      "continuity_rules": "Consistent color grading, focus on family, fade transitions, each scene 6 seconds",
+      "narrator_profile": "Female, empathetic, calm tone",
+      "title": "tembok besar china",
+      "engine": "Auto AI / Universal (Default)",
+      "ratio": "9:16 Vertical (TikTok/Reels/Shorts)",
+      "duration_setting": "6 Detik per Adegan",
+      "language_setting": "Bahasa Indonesia",
+      "voice_setting": "Narasi / Voiceover Only",
+      "narrator_gender": "Wanita (Female Voice)"
+    },
+    "scenes": [
+      {
+        "scene_num": 1,
+        "narration": "Di balik tembok besar China, jutaan orang menahan beban hidup yang tak terlihat setiap hari.",
+        "dialogue": "",
+        "prompt_image": "A cinematic photorealistic vertical 9:16 shot of the Li family\u2014Mei, her mother, and father\u2014standing behind the massive, weathered stones of the Great Wall of China at dusk, mist swirling around, moody low\u2011key lighting with a faint golden glow on their hopeful faces, shallow depth of field as if captured with a 35mm lens, ultra\u2011high detail 8K, muted blue\u2011gray color grading accented by warm amber tones, conveying invisible daily burdens yet a sense of hope.",
+        "prompt_video": "**Scene 1 \u2013 6\u202fseconds (Vertical 9:16, 8K, cinematic photorealistic, moody lighting, 35\u202fmm lens)**  \n\n- **Visual**: Dawn\u2011soft, desaturated color grade. The Li family (Mei, mother, father) stands on a mist\u2011shrouded section of the Great Wall, backs to the camera. Start with a wide establishing shot that slowly dollies forward (0\u202fs\u202f\u2192\u202f3\u202fs) while gently tilting upward to reveal the massive wall stretching into the horizon. At 3\u202fs a subtle depth\u2011of\u2011field pull brings Mei\u2019s face into gentle focus, then the shot holds steady until 5.8\u202fs, then fades to black (5.8\u202fs\u202f\u2192\u202f6\u202fs).  \n\n- **Voiceover (Female, empathetic, calm tone)**:  \n  `Voiceover (0.5\u202fs \u2192 5.5\u202fs): \"Di balik tembok besar China, jutaan orang menahan beban hidup yang tak terlihat setiap hari.\"`  \n\n- **Dialogue**: *None* (no character dialogue for this scene).",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 2,
+        "narration": "Keluarga Li berjuang setiap hari, mencari makanan di antara reruntuhan yang sunyi di bawah bayang kelam.",
+        "dialogue": "",
+        "prompt_image": "Vertical 9:16 ultra\u2011realistic cinematic scene, 8K resolution, shot with a 35mm lens, moody low\u2011key lighting and consistent desaturated color grading with a subtle warm amber highlight. In the foreground, three figures\u2014a young girl (Mei), her mother, and her father\u2014wearing tattered, earth\u2011tone clothing crouch amid silent, crumbling ruins of a once\u2011grand Chinese wall. Dust hangs in the air, broken stone and twisted metal scatter the ground. Dark shadows dominate the surroundings, but a thin shaft of soft sunrise light pierces through a crack in the wall, illuminating their faces with a faint hopeful glow. Their expressions are weary yet determined as they sift through debris, searching for food, conveying melancholy and quiet resilience.",
+        "prompt_video": "**Scene 2 \u2013 6\u202fseconds (9:16 vertical)**  \n\n**Visual & Motion**  \n- 0.0\u20110.5\u202fs: Slow crane\u2011down from a mist\u2011filled sky to reveal the shattered wall of a ruined Chinese city; muted, desaturated palette, 35\u202fmm shallow depth of field.  \n- 0.5\u20114.0\u202fs: Dolly\u2011track right following *Keluarga Li* (Mei, mother, father) as they tread cautiously among broken bricks, dust motes drifting in a single shaft of weak sunlight. Their faces show weary determination; mother clutches a battered sack, father scans the horizon.  \n- 4.0\u20115.5\u202fs: Push\u2011in close\u2011up on Mei\u2019s eyes reflecting the bleak surroundings, then a gentle pull\u2011back to keep the family in frame.  \n- 5.5\u20116.0\u202fs: Fade to black, preserving the moody lighting continuity.\n\n**Audio**  \n\n- **Voiceover (Female, empathetic, calm tone, 0.5\u202fs \u2192 5.5\u202fs):**  \n  \u201cKeluarga Li berjuang setiap hari, mencari makanan di antara reruntuhan yang sunyi di bawah bayang kelam.\u201d  \n\n- **Dialogue:** N/A (no character dialogue).",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 3,
+        "narration": "Anak mereka, Mei, membantu ibunya mengumpulkan air dari sumur tua yang hampir kering di sisi tembok.",
+        "dialogue": "",
+        "prompt_image": "Cinematic photorealistic vertical 9:16, 8K, 35mm lens, moody lighting \u2013 a melancholy\u2011yet\u2011hopeful scene of a young Chinese girl (Mei) and her mother at an ancient, nearly\u2011dry well beside the massive Great Wall of China. The towering wall looms in the background under a soft, golden sunrise mist. Mei holds a weathered wooden bucket, reaching into the shallow water while her mother gently guides her hand. Dusty cracked earth surrounds the well, with subtle rays of light filtering through thin clouds, creating warm muted color grading, shallow depth of field focused on the family, and a gentle hopeful glow.",
+        "prompt_video": "**Scene 3 \u2013 6\u202fseconds (9:16 vertical)**  \n\n- **Visual Theme:** Cinematic photorealistic, moody twilight lighting; consistent color grading with cool blues and warm amber highlights. Shot with a 35\u202fmm lens, 8K resolution.  \n- **Setting:** The weather\u2011worn stone wall of a traditional Chinese courtyard. To the right, an ancient, nearly\u2011dry well with a cracked stone rim. Dust motes drift in the low light.  \n- **Action & Camera Motion:**  \n  1. **0.0\u202fs \u2013 0.5\u202fs:** Slow fade\u2011in from black, establishing the wall and well. Camera starts at a low angle, focused on the well\u2019s rim.  \n  2. **0.5\u202fs \u2013 2.5\u202fs:** Dolly forward smoothly, moving past the well to reveal **Mei** (a young girl, ~8\u202fyears) kneeling beside her mother. Mei lifts a rustic wooden bucket; her mother steadies the rope.  \n  3. **2.5\u202fs \u2013 4.5\u202fs:** Slight push\u2011in on Mei\u2019s hands as she lowers the bucket into the shallow water, capturing droplets glistening in the dim light.  \n  4. **4.5\u202fs \u2013 5.5\u202fs:** Pull back gently to a medium shot of Mei and her mother sharing a quiet smile, the wall looming behind them.  \n  5. **5.5\u202fs \u2013 6.0\u202fs:** Fade\u2011out to black.  \n\n- **Audio Timing:**  \n  - **Voiceover (Female, empathetic, calm tone, 0.5\u202fs \u2192 5.5\u202fs):** \u201cAnak mereka, Mei, membantu ibunya mengumpulkan air dari sumur tua yang hampir kering di sisi tembok.\u201d  \n  - **Dialogue:** None.  \n\n- **Additional Notes:** Maintain soft ambient sounds of distant wind and faint water echoing from the well; keep background volume low to ensure the narration remains clear and uninterrupted.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 4,
+        "narration": "Setiap malam, suara teriakan melintas, mengingatkan mereka akan bahaya yang mengintai di antara bayang dinding gelap.",
+        "dialogue": "",
+        "prompt_image": "Photorealistic vertical 9:16 cinematic scene, 35mm lens, 8K, moody low\u2011key night lighting, a towering dark stone wall looms behind the Li family (Mei, her mother, and father) huddled together, faint moonlight and a soft lantern glow illuminate their melancholy yet hopeful faces, subtle blue\u2011gray color grading, shallow depth of field focusing on the family, wispy mist curls at their feet, distant echo of a scream suggested by faint rippling shadows along the wall, atmospheric tension with a hint of hope.",
+        "prompt_video": "**Scene\u202f4 \u2013 6\u202fseconds (9:16\u202fvertical)**  \n\n**Visual & Camera**  \n- Setting: Night\u2011time, the Li family (Mei, mother, father) stands close together before a massive, weathered Chinese wall; dim, moody lighting casts long shadows across the stone.  \n- Lens: 35\u202fmm, cinematic photorealistic, 8K resolution.  \n- Motion: Start with a tight medium shot of the family\u2019s faces, then a slow dolly\u2011in (0\u202fs \u2192\u202f4\u202fs) that widens to reveal the towering wall behind them, maintaining focus on the family\u2019s solemn expressions.  \n- Lighting: Soft rim light on the silhouettes, subtle rim\u2011glow on the wall\u2019s cracks to emphasize texture.  \n- Transition: Fade\u2011in from previous scene at 0\u202fs, fade\u2011out to black at 6\u202fs.\n\n**Audio**  \n- **Voiceover (Female, empathetic, calm voice, 0.5\u202fs \u2192\u202f5.5\u202fs):** \u201cSetiap malam, suara teriakan melintas, mengingatkan mereka akan bahaya yang mengintai di antara bayang dinding gelap.\u201d  \n- **Dialogue:** None.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 5,
+        "narration": "Namun harapan muncul ketika seorang relawan datang membawa makanan dan senyum harapan untuk keluarga Li yang terbatas.",
+        "dialogue": "",
+        "prompt_image": "Cinematic photorealistic vertical 9:16, 35mm lens, 8K, moody soft lighting \u2013 a modest Chinese apartment interior at late afternoon, warm amber light spilling through a small window onto a worn floor; a weary family of three (young girl Mei, her mother, and father) seated on simple mats, eyes downcast; a compassionate volunteer in humble clothing enters holding a brown paper food bag, offering a gentle, hopeful smile; shallow depth of field focuses on the volunteer\u2019s hand extending the food, muted color grading with warm highlights, cinematic bokeh, subtle film grain.",
+        "prompt_video": "**Scene 5 (6\u202fs, 9:16 vertical, 35\u202fmm, cinematic photorealistic, moody lighting, consistent color grade)**  \n- **Visual**: The Li family\u2019s cramped living room is dimly lit by a single window. At **0.0\u20110.8\u202fs** the camera holds a wide vertical frame showing Mei, her mother, and father on a worn sofa, heads bowed. At **1.0\u202fs** a volunteer in a bright red jacket enters, carrying a tray of steaming food and a warm smile. The volunteer steps forward, places the tray on the coffee table, and gently lifts Mei\u2019s chin, offering hope. Soft window light catches the volunteer\u2019s face, and the family\u2019s eyes widen with relief.  \n- **Camera motion**:  \n  * **0.0\u20110.8\u202fs** \u2013 static wide shot.  \n  * **0.8\u20113.0\u202fs** \u2013 slow dolly\u2011in to a medium close\u2011up on the volunteer\u2019s hand setting down the food.  \n  * **3.0\u20114.5\u202fs** \u2013 gentle tilt up to capture the family\u2019s expressions.  \n  * **4.5\u20115.0\u202fs** \u2013 subtle push\u2011out to frame all characters together.  \n  * **5.0\u20115.5\u202fs** \u2013 0.5\u202fs fade\u2011to\u2011black, preparing the next scene.  \n\n- **Audio**:  \n  * **Voiceover (Female, empathetic, calm tone, **0.5\u202fs \u2192\u202f5.5\u202fs**)**: \u201cNamun harapan muncul ketika seorang relawan datang membawa makanan dan senyum harapan untuk keluarga Li yang terbatas.\u201d  \n  * **Dialogue**: N/A  \n\n- **Sound design**: Soft ambient room hum, faint street noise outside, gentle rustle of the food tray at **1.2\u202fs**, and a subtle hopeful piano chord swelling from **0.5\u202fs** and fading out at **5.5\u202fs**.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 6,
+        "narration": "Mereka berbagi cerita, mengingat masa sebelum tembok, saat dunia masih terbuka lebar dan penuh cahaya harapan.",
+        "dialogue": "",
+        "prompt_image": "A vertical 9:16 cinematic photorealistic scene of three Asian family members (young girl Mei, her mother, and father) sitting together on a simple wooden floor in a modest Chinese home, soft moody lighting streaming through a window casting warm golden rays, their faces gentle and reflective as they share stories, nostalgic expressions hinting at memories of a time before the great wall when the world was open and full of hopeful light, faint silhouette of the massive wall visible outside the window, muted blue\u2011gray and warm amber color grading, 35mm lens, ultra\u2011detailed, 8K resolution.",
+        "prompt_video": "**Scene\u202f6 \u2013 6\u202fseconds (9:16 vertical)**  \n\n**Visual & Camera**  \n- Setting: The Li family (Mei, mother, father) seated on the stone steps of the Great Wall at twilight; moody, soft\u2011gold light spilling over the horizon, cinematic photorealistic 35\u202fmm look, 8K.  \n- Motion: Start with a wide 2\u2011second establishing shot of the wall\u2019s curve, then a slow dolly\u2011in (0.5\u202fm/s) over 3\u202fseconds to a medium close\u2011up on the three faces, ending with a gentle 1\u2011second tilt upward to the sky as the voice fades.  \n- Action: Mei leans slightly forward, eyes reflective; mother rests a hand on Mei\u2019s shoulder, father gazes into the distance with a faint hopeful smile.  \n- Color grading: Consistent cool\u2011blue shadows with warm amber highlights on skin; subtle vignette to keep focus on the family.  \n- Transition: Fade\u2011in at 0.0\u202fs, fade\u2011out at 5.8\u202fs.\n\n**Audio**  \n\n- **Voiceover (Female, empathetic, calm, 0.0\u202fs \u2192 5.6\u202fs):**  \n  \u201cMereka berbagi cerita, mengingat masa sebelum tembok, saat dunia masih terbuka lebar dan penuh cahaya harapan.\u201d  \n\n- **Dialogue:** N/A  \n\n**Timing Summary**  \n- 0.0\u202fs \u2013 Fade\u2011in, ambient wind on the wall.  \n- 0.0\u202fs \u2192 5.6\u202fs \u2013 Voiceover delivers the exact narration, paced to finish naturally before the final 0.4\u202fs fade\u2011out.  \n- 5.6\u202fs \u2192 6.0\u202fs \u2013 Ambient sound continues, scene fades to black.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 7,
+        "narration": "Tembok tetap berdiri, namun hati mereka kini lebih kuat, menolak penindasan dari kekuasaan yang menindas selamanya.",
+        "dialogue": "",
+        "prompt_image": "A photorealistic vertical 9:16 cinematic scene of Mei, her mother, and her father standing resolutely in front of the Great Wall of China at dusk; the ancient wall looms behind them, illuminated by moody, soft golden sunrise light that casts deep shadows and a subtle warm glow around the family\u2019s chests, symbolizing strengthened hearts rejecting oppression; their faces show quiet determination and hopeful resolve, misty clouds drift low over the wall, color grading is consistent, shot with a 35mm lens, ultra\u2011high detail 8K resolution.",
+        "prompt_video": "**Scene 7 \u2013 6\u202fseconds (9:16 vertical, 35mm, photorealistic, moody lighting, consistent color grade)**  \n- **Visual:** The Li family (Mei, mother, father) stands together on the crest of the Great Wall at dawn. A thin mist rolls over the stones. The camera begins with a wide establishing shot, then slowly dolly\u2011in over 2\u202fseconds to a medium close\u2011up of the three faces, capturing their resolute expressions. At second\u202f4, a gentle upward tilt reveals the massive wall stretching into the horizon, symbolizing enduring strength. Subtle wind rustles their clothing; the lighting is soft, amber\u2011tinted, emphasizing hope amid melancholy. Fade to black at the end of the 6\u2011second clip.  \n\n- **Voiceover (Female, empathetic, calm, 0.5\u202fs \u2192\u202f5.5\u202fs):**  \n  \u201cTembok tetap berdiri, namun hati mereka kini lebih kuat, menolak penindasan dari kekuasaan yang menindas selamanya.\u201d  \n\n- **Dialogue:** None.",
+        "is_unlocked": true
+      },
+      {
+        "scene_num": 8,
+        "narration": "Kisah mereka menjadi saksi, mengajarkan dunia tentang ketabahan di balik dinding yang tak terlihat namun kekal.",
+        "dialogue": "",
+        "prompt_image": "Cinematic photorealistic vertical 9:16 image of an Asian family \u2013 young girl Mei, her mother, and father \u2013 standing close together in front of a faint, translucent ancient Chinese wall that seems to dissolve into mist, symbolizing an invisible yet eternal barrier; soft, moody golden\u2011hour lighting casts gentle shadows, highlighting their hopeful expressions; shallow depth of field with a 35mm lens effect, rich color grading that blends melancholy blues with warm amber tones, ultra\u2011detail 8K resolution, emphasizing resilience and unity.",
+        "prompt_video": "**Scene 8 \u2013 6\u202fseconds (9:16 vertical, 8K, cinematic photorealistic, moody lighting, 35\u202fmm lens)**  \n\n**Visual:**  \n- Fade\u2011in from the previous scene to a twilight\u2011blue sky behind the Great Wall of China, its ancient stones bathed in soft, diffused light.  \n- The Li family (Mei, her mother, and father) stand side\u2011by\u2011side on the wall\u2019s edge, silhouettes outlined by a faint orange horizon.  \n- Camera starts with a tight medium shot of Mei\u2019s face (reflective, slight smile), then slowly dolly\u2011out while gently rotating clockwise to reveal the expansive wall winding into the mist.  \n- Color grading remains cool\u2011blue with warm amber highlights on the family\u2019s clothing, maintaining continuity with earlier scenes.  \n- End with a 0.3\u2011second fade\u2011to\u2011black.\n\n**Audio:**  \n- **Voiceover (Female, empathetic, calm, 0.5\u202fs \u2192 5.5\u202fs):** \u201cKisah mereka menjadi saksi, mengajarkan dunia tentang ketabahan di balik dinding yang tak terlihat namun kekal.\u201d  \n- No dialogue (Dialogue: N/A).  \n- Ambient wind softly rustles the wall stones, mixed low under the voiceover; the sound fades out together with the visual fade\u2011to\u2011black at 5.9\u202fs.",
+        "is_unlocked": true
+      }
+    ],
+    "timestamp": "2026-09-30 12:56"
+  }
+}

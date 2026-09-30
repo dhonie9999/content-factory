@@ -1,0 +1,513 @@
+import streamlit as st
+import time
+import json
+import random
+import os
+from google import genai
+from google.genai import types
+
+# -----------------------------------------------------------------------------
+# 1. KONFIGURASI HALAMAN & CSS
+# -----------------------------------------------------------------------------
+st.set_page_config(
+    page_title="Factory Content Studio",
+    page_icon="🎬",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+st.markdown("""
+    <style>
+    .main .block-container { padding-top: 1.5rem; padding-bottom: 2rem; }
+    .stButton>button { width: 100%; border-radius: 8px; height: 3em; font-weight: bold; }
+    div[data-testid="stSidebarUserContent"] { padding-top: 1rem; }
+    .locked-card { opacity: 0.5; filter: grayscale(80%); }
+    </style>
+""", unsafe_allow_html=True)
+
+# -----------------------------------------------------------------------------
+# 2. FILE PENYIMPANAN LOKAL (PERSISTENCE)
+# -----------------------------------------------------------------------------
+CONFIG_FILE = ".activation_config.json"
+PROJECTS_FILE = ".recent_projects.json"
+
+def load_activation_key():
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, "r") as f:
+                data = json.load(f)
+                return data.get("activation_code", "")
+        except:
+            return ""
+    return ""
+
+def save_activation_key(code):
+    with open(CONFIG_FILE, "w") as f:
+        json.dump({"activation_code": code}, f)
+
+def load_recent_projects():
+    if os.path.exists(PROJECTS_FILE):
+        try:
+            with open(PROJECTS_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_project_to_history(title, show_bible, scenes):
+    projects = load_recent_projects()
+    projects[title] = {
+        "show_bible": show_bible,
+        "scenes": scenes,
+        "timestamp": time.strftime("%Y-%m-%d %H:%M")
+    }
+    with open(PROJECTS_FILE, "w") as f:
+        json.dump(projects, f, indent=2)
+
+# -----------------------------------------------------------------------------
+# 3. PRESET LISTS
+# -----------------------------------------------------------------------------
+VIDEO_TYPES = [
+    "Auto AI / Smart Mode (Default)",
+    "Music Video / Karaoke Visualizer",
+    "Short Drama / Mini Series / Film Story",
+    "Movie Cinematic / Trailer",
+    "Iklan / Affiliate Product / Marketing",
+    "Fakta Unik / Edukasi / Dokumenter",
+    "Horor / Thriller / Misteri",
+    "Motivasi / Podcast Visual / Quote",
+    "✏️ Custom Type..."
+]
+
+VISUAL_STYLES = [
+    "Auto AI / Smart Match (Default)",
+    "Cinematic Photorealistic (8k, Moody Lighting, 35mm Lens)",
+    "Tilt-Shift / Diorama Miniature World",
+    "Claymation / Stop-Motion Animation",
+    "3D Animation / Pixar & DreamWorks Style",
+    "2D Anime / Japanese Animation (Makoto Shinkai Style)",
+    "Papercraft / Cutout Origami Art",
+    "Cyberpunk / Neon Future Aesthetic",
+    "Vintage 80s / 90s VHS Retro Aesthetic",
+    "Dark Fantasy / Gothic Oil Painting",
+    "Vector Flat Design / Minimalist Motion",
+    "Isometric 3D / Low Poly Art",
+    "✏️ Custom Visual Style..."
+]
+
+AI_ENGINES = [
+    "Auto AI / Universal (Default)",
+    "Midjourney (v6 / Niji)",
+    "FLUX.1 (Dev/Schnell)",
+    "Stable Diffusion (XL/3)",
+    "✏️ Custom Engine..."
+]
+
+ASPECT_RATIOS = [
+    "Auto AI / 16:9 Landscape (Default)",
+    "9:16 Vertical (TikTok/Reels/Shorts)",
+    "1:1 Square (Feed)",
+    "✏️ Custom Ratio..."
+]
+
+DURATION_OPTIONS = [
+    "AI AUTO / Flexible (Default)",
+    "10 Detik per Adegan",
+    "20 Detik per Adegan",
+    "30 Detik per Adegan",
+    "60 Detik per Adegan",
+    "✏️ Custom Durasi..."
+]
+
+SCENE_COUNT_OPTIONS = [
+    "AI AUTO / Flexible (Default)",
+    "4 Scene",
+    "5 Scene",
+    "8 Scene",
+    "10 Scene (Maksimal)",
+    "✏️ Custom (Maksimal 10)..."
+]
+
+VOICE_TYPES = [
+    "AI AUTO / Adaptif (Default)",
+    "Narasi / Voiceover Only",
+    "Dialog Karakter Only",
+    "Gabungan (Narasi + Dialog)"
+]
+
+LANGUAGE_OPTIONS = [
+    "AI AUTO / Ikuti Input (Default)",
+    "Bahasa Indonesia",
+    "Bahasa Inggris (English)",
+    "✏️ Custom Bahasa..."
+]
+
+FALLBACK_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"]
+
+# -----------------------------------------------------------------------------
+# 4. HELPER: SAFE API CALL (SINGLE & JSON)
+# -----------------------------------------------------------------------------
+def call_gemini_safe(api_key, system_instruction, user_prompt, selected_model="gemini-1.5-flash", is_json=True, max_retries=3):
+    client = genai.Client(api_key=api_key)
+    models_to_try = [selected_model] + [m for m in FALLBACK_MODELS if m != selected_model]
+    
+    for model_name in models_to_try:
+        for attempt in range(max_retries):
+            try:
+                config_args = {"system_instruction": system_instruction, "temperature": 0.7}
+                if is_json:
+                    config_args["response_mime_type"] = "application/json"
+                
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=user_prompt,
+                    config=types.GenerateContentConfig(**config_args)
+                )
+                if is_json:
+                    return json.loads(response.text)
+                return response.text
+            except Exception as e:
+                err_str = str(e)
+                if "404" in err_str or "NOT_FOUND" in err_str:
+                    st.warning(f"⚠️ Versi `{model_name}` tidak tersedia, mengalihkan ke model cadangan...")
+                    break 
+                if attempt < max_retries - 1:
+                    time.sleep((2 ** attempt) + random.uniform(0.5, 1.5))
+                else:
+                    st.warning(f"⚠️ Gagal di model `{model_name}`. Mencoba model berikutnya...")
+    
+    st.error("❌ Aktivasi gagal diproses. Pastikan Kode Aktivasi Anda benar dan kuota masih aktif.")
+    return None
+
+# -----------------------------------------------------------------------------
+# 5. SESSION STATE INITIALIZATION
+# -----------------------------------------------------------------------------
+if "activation_code" not in st.session_state:
+    st.session_state.activation_code = load_activation_key()
+if "show_bible" not in st.session_state:
+    st.session_state.show_bible = None
+if "scenes" not in st.session_state:
+    st.session_state.scenes = []
+
+# -----------------------------------------------------------------------------
+# 6. SIDEBAR CONTROL PANEL
+# -----------------------------------------------------------------------------
+with st.sidebar:
+    st.title("🎬 Factory Content")
+    st.caption("AI Script & Visual Asset Generator Engine")
+    st.divider()
+
+    # BLOCK 1: SISTEM AKTIVASI
+    st.subheader("🔑 Status Aktivasi")
+    if "edit_activation" not in st.session_state:
+        st.session_state.edit_activation = False if st.session_state.activation_code else True
+
+    if not st.session_state.edit_activation and st.session_state.activation_code:
+        st.success("🟢 **AKTIF / TERVERIFIKASI**")
+        st.caption("Device ini sudah terverifikasi.")
+        if st.button("🔄 Ganti Kode Aktivasi", key="btn_change_act"):
+            st.session_state.edit_activation = True
+            st.rerun()
+    else:
+        input_code = st.text_input(
+            "Masukkan Kode Aktivasi *",
+            value=st.session_state.activation_code,
+            type="password",
+            placeholder="Ketik kode aktivasi Anda...",
+            help="Kode aktivasi ini akan menempel otomatis di device Anda."
+        )
+        if st.button("💾 Simpan Kode Aktivasi", type="primary"):
+            if input_code.strip():
+                save_activation_key(input_code.strip())
+                st.session_state.activation_code = input_code.strip()
+                st.session_state.edit_activation = False
+                st.success("✅ Kode Aktivasi Berhasil Disimpan!")
+                st.rerun()
+                
+    st.divider()
+
+    # BLOCK 2: INPUT UTAMA
+    project_title = st.text_input(
+        "1. Judul / Ide Utama Video (WAJIB) *",
+        placeholder="Misal: Mawar Hitam - D'Bagindas",
+        key="project_title"
+    )
+
+    custom_notes = st.text_area(
+        "2. Lirik Lagu / Detail Cerita / Catatan (Opsional)",
+        placeholder="Tempel lirik lagu lengkap di sini, atau detail karakter...",
+        height=120,
+        key="custom_notes"
+    )
+
+    st.subheader("⚙️ Parameter Preset")
+
+    selected_type = st.selectbox("Jenis Video", VIDEO_TYPES)
+    final_type = st.text_input("Tulis Jenis Video Khusus:", placeholder="Misal: Micro-Documentary") if selected_type == "✏️ Custom Type..." else selected_type
+
+    selected_style = st.selectbox("Gaya Visual Graphics", VISUAL_STYLES)
+    final_style = st.text_input("Tulis Gaya Visual Khusus:", placeholder="Misal: 1990s Dark Synthwave") if selected_style == "✏️ Custom Visual Style..." else selected_style
+
+    selected_engine = st.selectbox("Target AI Engine", AI_ENGINES)
+    final_engine = st.text_input("Tulis AI Engine Khusus:", placeholder="Misal: Leonardo AI") if selected_engine == "✏️ Custom Engine..." else selected_engine
+
+    selected_ratio = st.selectbox("Aspect Ratio / Format", ASPECT_RATIOS)
+    final_ratio = st.text_input("Tulis Ratio Khusus:", placeholder="Misal: 21:9 Ultrawide") if selected_ratio == "✏️ Custom Ratio..." else selected_ratio
+
+    st.markdown("---")
+    st.caption("🎬 **Kontrol Durasi & Adegan**")
+
+    selected_dur = st.selectbox("Durasi Per Adegan", DURATION_OPTIONS)
+    final_duration = st.text_input("Tulis Durasi Khusus (detik):", placeholder="Misal: 15 detik") if selected_dur == "✏️ Custom Durasi..." else selected_dur
+
+    selected_sc_count = st.selectbox("Jumlah Adegan (Maks 10)", SCENE_COUNT_OPTIONS)
+    if selected_sc_count == "✏️ Custom (Maksimal 10)...":
+        custom_sc_val = st.number_input("Input Jumlah Adegan (1-10):", min_value=1, max_value=10, value=5, step=1)
+        final_scene_count = f"{custom_sc_val} Scene"
+    else:
+        final_scene_count = selected_sc_count
+
+    final_voice = st.selectbox("Format Voice / Suara", VOICE_TYPES)
+
+    selected_lang = st.selectbox("Bahasa Naskah / Narasi", LANGUAGE_OPTIONS)
+    final_language = st.text_input("Tulis Bahasa Khusus:", placeholder="Misal: Bahasa Jawa / Jepang") if selected_lang == "✏️ Custom Bahasa..." else selected_lang
+
+    st.markdown("---")
+
+    selected_model = st.selectbox(
+        "Mode Performa Engine",
+        options=["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"],
+        index=0
+    )
+
+    st.divider()
+
+    build_btn = st.button("🚀 BUILD NARASI & BIBLE", type="primary")
+    
+    if st.button("🔄 Reset / Buat Proyek Baru"):
+        st.session_state.show_bible = None
+        st.session_state.scenes = []
+        st.rerun()
+
+    st.divider()
+
+    # BLOCK 4: RECENT PROJECTS
+    st.subheader("📂 Recent Projects")
+    recent_dict = load_recent_projects()
+    if recent_dict:
+        selected_project_name = st.selectbox(
+            "Pilih Proyek Sebelumnya:",
+            options=["-- Pilih Proyek --"] + list(recent_dict.keys())
+        )
+        if selected_project_name != "-- Pilih Proyek --":
+            if st.button("📂 Buka Proyek Ini"):
+                proj_data = recent_dict[selected_project_name]
+                st.session_state.show_bible = proj_data["show_bible"]
+                st.session_state.scenes = proj_data["scenes"]
+                st.success(f"Proyek '{selected_project_name}' berhasil dimuat!")
+                st.rerun()
+
+# -----------------------------------------------------------------------------
+# 7. MAIN CANVAS & SEQUENTIAL GENERATION LOGIC
+# -----------------------------------------------------------------------------
+st.title("🎬 Main Canvas & Script Studio")
+
+# LANGKAH 1: GENERATE PROJECT BIBLE & NARASI UTAMA PERTAMA KALI
+if build_btn:
+    if not st.session_state.activation_code:
+        st.error("⚠️ Silakan masukkan dan simpan Kode Aktivasi terlebih dahulu di bagian atas Sidebar!")
+    elif not project_title.strip():
+        st.error("⚠️ Judul / Ide Utama Video wajib diisi terlebih dahulu!")
+    else:
+        with st.spinner("⏳ Menghubungkan ke Engine & Menyiapkan List Narasi Adegan..."):
+            sys_instruct = """
+            You are 'Factory Content Engine', an elite AI scriptwriter and visual asset director for video production.
+            Generate a JSON object containing two main keys:
+            1. 'show_bible': Object containing summary of main_character, visual_theme, mood, continuity_rules.
+            2. 'scenes': Array of objects, each containing:
+               - 'scene_num': integer
+               - 'narration': string (narrative text, dialogue, or song lyric written strictly in requested language)
+            Return strictly valid JSON only.
+            """
+
+            user_prompt = f"""
+            PROJECT SPECS:
+            - Title/Idea: {project_title}
+            - Extra Notes/Lyrics: {custom_notes if custom_notes else 'None'}
+            - Video Type: {final_type}
+            - Visual Style: {final_style}
+            - Target AI Engine: {final_engine}
+            - Aspect Ratio: {final_ratio}
+            - Target Scene Duration: {final_duration}
+            - Requested Scene Count Limit: {final_scene_count} (STRICT MAXIMUM: 10 scenes)
+            - Voice/Audio Style: {final_voice}
+            - Script Target Language: {final_language}
+
+            Break down the project into logical sequential narration list.
+            Do NOT generate visual prompts yet. Just generate the Project Bible and the scene-by-scene Narration.
+            Strictly honor the maximum scene count of 10.
+            """
+
+            result = call_gemini_safe(
+                api_key=st.session_state.activation_code,
+                system_instruction=sys_instruct,
+                user_prompt=user_prompt,
+                selected_model=selected_model,
+                is_json=True
+            )
+
+            if result:
+                show_bible_data = result.get("show_bible", {})
+                show_bible_data["title"] = project_title
+                show_bible_data["engine"] = final_engine
+                show_bible_data["ratio"] = final_ratio
+                show_bible_data["duration_setting"] = final_duration
+                show_bible_data["language_setting"] = final_language
+
+                scenes_input = result.get("scenes", [])
+                
+                # Inisialisasi struktur adegan dengan status Unlocked untuk Scene 1
+                formatted_scenes = []
+                for idx, sc in enumerate(scenes_input):
+                    formatted_scenes.append({
+                        "scene_num": sc.get("scene_num", idx + 1),
+                        "narration": sc.get("narration", ""),
+                        "prompt_image": "",
+                        "prompt_video": "",
+                        "is_unlocked": True if idx == 0 else False
+                    })
+
+                st.session_state.show_bible = show_bible_data
+                st.session_state.scenes = formatted_scenes
+
+                save_project_to_history(project_title, show_bible_data, formatted_scenes)
+                st.success("✅ List Narasi & Project Bible berhasil dibuat!")
+
+# DISPLAY MAIN CANVAS (TAMPILAN SEQUENTIAL PROMPT GENERATOR)
+if st.session_state.show_bible:
+    # 1. SHOW BIBLE CARD
+    with st.expander("🟢 PROJECT BIBLE (Locked Continuity Rules)", expanded=True):
+        col1, col2, col3 = st.columns(3)
+        sb = st.session_state.show_bible
+        with col1:
+            st.write(f"**Judul:** {sb.get('title', '-')}")
+            st.write(f"**Karakter Utama:** {sb.get('main_character', '-')}")
+            st.write(f"**Bahasa Naskah:** {sb.get('language_setting', '-')}")
+        with col2:
+            st.write(f"**Visual Theme:** {sb.get('visual_theme', '-')}")
+            st.write(f"**Target Engine:** {sb.get('engine', '-')}")
+            st.write(f"**Setting Durasi:** {sb.get('duration_setting', '-')}")
+        with col3:
+            st.write(f"**Format Ratio:** {sb.get('ratio', '-')}")
+            st.write(f"**Continuity Rule:** {sb.get('continuity_rules', '-')}")
+
+    st.divider()
+    
+    # 2. LIST NARASI UTAMA
+    st.subheader("📜 List Narasi Video")
+    for sc_idx, sc in enumerate(st.session_state.scenes):
+        s_num = sc["scene_num"]
+        col_nar1, col_nar2, col_nar3 = st.columns([5, 1, 1.5])
+        with col_nar1:
+            st.markdown(f"**Adegan {s_num}:** {sc['narration']}")
+        with col_nar2:
+            st.code(sc['narration'], language="text")
+        with col_nar3:
+            if st.button(f"🔄 Regen Narasi {s_num}", key=f"btn_regen_nar_{s_num}"):
+                with st.spinner(f"Memperbarui Narasi Adegan {s_num}..."):
+                    prompt_regen = f"Rewrite this narration for Scene {s_num} keeping the same story context: {sc['narration']}"
+                    new_nar = call_gemini_safe(
+                        st.session_state.activation_code,
+                        "You are a video narration editor. Return only the revised text.",
+                        prompt_regen,
+                        selected_model=selected_model,
+                        is_json=False
+                    )
+                    if new_nar:
+                        st.session_state.scenes[sc_idx]["narration"] = new_nar.strip()
+                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                        st.rerun()
+
+    st.divider()
+
+    # 3. SEQUENTIAL PROMPT GENERATOR PER ADEGAN
+    st.subheader("🎬 Breakdown Prompt Image & Video (Sequential Generation)")
+
+    for sc_idx, sc in enumerate(st.session_state.scenes):
+        s_num = sc["scene_num"]
+        is_unlocked = sc["is_unlocked"]
+
+        with st.container(border=True):
+            if not is_unlocked:
+                # TAMPILAN TERKUNCI (LOCKED STATE)
+                st.markdown(f"### 🔒 Adegan {s_num} (Terkunci)")
+                st.caption(f"Selesaikan pembuatan Prompt pada **Adegan {s_num-1}** terlebih dahulu untuk membuka adegan ini.")
+            else:
+                # TAMPILAN TERBUKA (UNLOCKED STATE)
+                st.markdown(f"### 🟢 Adegan {s_num}")
+                st.markdown(f"**Narasi:** {sc['narration']}")
+
+                col_p1, col_p2 = st.columns(2)
+
+                # --- COLUMN 1: PROMPT IMAGE ---
+                with col_p1:
+                    st.markdown("#### 🖼️ Prompt Image")
+                    if sc["prompt_image"]:
+                        st.code(sc["prompt_image"], language="markdown")
+                        if st.button(f"🔄 Regenerate Prompt Image {s_num}", key=f"btn_regen_img_{s_num}"):
+                            with st.spinner(f"Mengkoreksi Prompt Image Adegan {s_num}..."):
+                                p_sys = "You are a master prompt engineer for text-to-image models like Midjourney and FLUX."
+                                p_user = f"Project Bible Context: {st.session_state.show_bible}\nScene Narration: {sc['narration']}\nGenerate a highly detailed, cinematic text-to-image visual prompt in English."
+                                new_img_p = call_gemini_safe(st.session_state.activation_code, p_sys, p_user, selected_model, is_json=False)
+                                if new_img_p:
+                                    st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
+                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                    st.rerun()
+                    else:
+                        if st.button(f"✨ Generate Prompt Image {s_num}", key=f"btn_gen_img_{s_num}", type="primary"):
+                            with st.spinner(f"Membuat Prompt Image Adegan {s_num}..."):
+                                p_sys = "You are a master prompt engineer for text-to-image models like Midjourney and FLUX."
+                                p_user = f"Project Bible Context: {st.session_state.show_bible}\nScene Narration: {sc['narration']}\nGenerate a highly detailed, cinematic text-to-image visual prompt in English."
+                                new_img_p = call_gemini_safe(st.session_state.activation_code, p_sys, p_user, selected_model, is_json=False)
+                                if new_img_p:
+                                    st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
+                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                    st.rerun()
+
+                # --- COLUMN 2: PROMPT VIDEO ---
+                with col_p2:
+                    st.markdown("#### 🎥 Prompt Video")
+                    if sc["prompt_video"]:
+                        st.code(sc["prompt_video"], language="markdown")
+                        if st.button(f"🔄 Regenerate Prompt Video {s_num}", key=f"btn_regen_vid_{s_num}"):
+                            with st.spinner(f"Mengkoreksi Prompt Video Adegan {s_num}..."):
+                                p_sys = "You are an expert AI Video prompt engineer for tools like Runway Gen-2, Luma Dream Machine, and Kling AI."
+                                p_user = f"Project Bible Context: {st.session_state.show_bible}\nScene Narration: {sc['narration']}\nGenerate dynamic motion and camera movement video prompt in English."
+                                new_vid_p = call_gemini_safe(st.session_state.activation_code, p_sys, p_user, selected_model, is_json=False)
+                                if new_vid_p:
+                                    st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
+                                    
+                                    # UNLOCK ADEGAN BERIKUTNYA
+                                    if sc_idx + 1 < len(st.session_state.scenes):
+                                        st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
+                                    
+                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                    st.rerun()
+                    else:
+                        if st.button(f"✨ Generate Prompt Video {s_num}", key=f"btn_gen_vid_{s_num}", type="primary"):
+                            with st.spinner(f"Membuat Prompt Video Adegan {s_num}..."):
+                                p_sys = "You are an expert AI Video prompt engineer for tools like Runway Gen-2, Luma Dream Machine, and Kling AI."
+                                p_user = f"Project Bible Context: {st.session_state.show_bible}\nScene Narration: {sc['narration']}\nGenerate dynamic motion and camera movement video prompt in English."
+                                new_vid_p = call_gemini_safe(st.session_state.activation_code, p_sys, p_user, selected_model, is_json=False)
+                                if new_vid_p:
+                                    st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
+                                    
+                                    # UNLOCK ADEGAN BERIKUTNYA AUTOMATIS
+                                    if sc_idx + 1 < len(st.session_state.scenes):
+                                        st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
+                                    
+                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                    st.rerun()
+
+else:
+    st.info("👈 Masukkan **Kode Aktivasi** & **Judul Proyek** di Sidebar sebelah kiri, lalu klik **BUILD NARASI & BIBLE** untuk memulai!")
