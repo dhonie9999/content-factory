@@ -14,6 +14,7 @@ import time
 import json
 import random
 import os
+import re
 import pandas as pd
 from groq import Groq
 
@@ -97,10 +98,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 2. FILE PENYIMPANAN DATABASE & PROYEK
+# 2. FILE PENYIMPANAN DATABASE & PROYEK TERISOLASI PER AKUN
 # -----------------------------------------------------------------------------
 CSV_FILE = "license.csv"
-PROJECTS_FILE = ".recent_projects.json"
 
 @st.cache_data(ttl=1)
 def load_users():
@@ -126,23 +126,34 @@ def update_user_activation(user_email, activation_key):
         df.loc[df["email"] == user_email, "active_session"] = activation_key.strip()
         df.to_csv(CSV_FILE, index=False)
 
-def load_recent_projects():
-    if os.path.exists(PROJECTS_FILE):
+# Fungsi riwayat proyek spesifik berdasarkan email pengguna (Isolasi Data)
+def get_user_history_filename(email):
+    safe_email = re.sub(r'[^a-zA-Z0-9]', '_', email)
+    return f".recent_projects_{safe_email}.json"
+
+def load_recent_projects(email):
+    if not email:
+        return {}
+    filename = get_user_history_filename(email)
+    if os.path.exists(filename):
         try:
-            with open(PROJECTS_FILE, "r") as f:
+            with open(filename, "r") as f:
                 return json.load(f)
         except:
             return {}
     return {}
 
-def save_project_to_history(title, show_bible, scenes):
-    projects = load_recent_projects()
+def save_project_to_history(email, title, show_bible, scenes):
+    if not email:
+        return
+    filename = get_user_history_filename(email)
+    projects = load_recent_projects(email)
     projects[title] = {
         "show_bible": show_bible,
         "scenes": scenes,
         "timestamp": time.strftime("%Y-%m-%d %H:%M")
     }
-    with open(PROJECTS_FILE, "w") as f:
+    with open(filename, "w") as f:
         json.dump(projects, f, indent=2)
 
 # -----------------------------------------------------------------------------
@@ -257,7 +268,7 @@ CAMERA_SHOT_OPTIONS = [
     "High Angle / Top-Down Bird's Eye View",
     "Drone Flythrough / Tracking Shot",
     "Orbiting Dynamic Camera Motion",
-    "✏️ Custom Camera Shot..."
+    "✏️️ Custom Camera Shot..."
 ]
 
 LIGHTING_OPTIONS = [
@@ -323,7 +334,7 @@ def call_groq_safe(api_key, system_instruction, user_prompt, selected_model="ope
     return None
 
 # -----------------------------------------------------------------------------
-# 5. SESSION STATE INITIALIZATION (AUTH & APP)
+# 5. SESSION STATE INITIALIZATION & QUERY PARAMS (ANTI-LOGOUT SAAT REFRESH)
 # -----------------------------------------------------------------------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -335,6 +346,20 @@ if "show_bible" not in st.session_state:
     st.session_state.show_bible = None
 if "scenes" not in st.session_state:
     st.session_state.scenes = []
+
+# Sinkronisasi parameter URL untuk pemulihan sesi otomatis saat browser di-refresh (khususnya di HP)
+query_params = st.query_params
+if not st.session_state.logged_in and "session_user" in query_params:
+    saved_email = query_params["session_user"].strip()
+    df_users = load_users()
+    if not df_users.empty:
+        user_match = df_users[df_users["email"] == saved_email]
+        if not user_match.empty:
+            saved_key = str(user_match.iloc[0]["active_session"]).strip()
+            if saved_key != "" and saved_key != "nan" and pd.notna(saved_key):
+                st.session_state.logged_in = True
+                st.session_state.user_email = saved_email
+                st.session_state.step = "app"
 
 # =============================================================================
 # 6. TAHAP AUTENTIKASI (LOGIN & AKTIVASI BERBASIS CSV)
@@ -365,6 +390,7 @@ if not st.session_state.logged_in:
                         if saved_key != "" and saved_key != "nan" and pd.notna(saved_key):
                             st.session_state.logged_in = True
                             st.session_state.step = "app"
+                            st.query_params["session_user"] = clean_email
                             st.rerun()
                         else:
                             st.session_state.step = "input_aktivasi"
@@ -376,7 +402,6 @@ if not st.session_state.logged_in:
         st.warning("⚠️ Akun Anda belum memiliki data aktivasi. Masukkan kode aktivasi Anda di bawah ini.")
 
         with st.form("aktivasi_form"):
-            # Di sini diperbolehkan menggunakan kata 'kode api' sesuai permintaan petunjuk teknis
             input_apikey = st.text_input("Masukkan Kode Aktivasi (Groq API Key):", type="password")
             submit_aktivasi = st.form_submit_button("Proses Aktivasi & Masuk")
 
@@ -394,6 +419,7 @@ if not st.session_state.logged_in:
                 update_user_activation(st.session_state.user_email, clean_key)
                 st.session_state.logged_in = True
                 st.session_state.step = "app"
+                st.query_params["session_user"] = st.session_state.user_email
                 st.success("✅ Aktivasi Berhasil! Memasuki aplikasi...")
                 st.rerun()
             else:
@@ -430,6 +456,8 @@ else:
             st.session_state.logged_in = False
             st.session_state.user_email = ""
             st.session_state.step = "input_email"
+            if "session_user" in st.query_params:
+                del st.query_params["session_user"]
             st.rerun()
 
         st.divider()
@@ -478,7 +506,7 @@ else:
             final_cam = st.text_input("Sudut Kamera Khusus:", placeholder="Misal: Macro 100mm Focus") if selected_cam == "✏️ Custom Camera Shot..." else selected_cam
 
             selected_light = st.selectbox("Pencahayaan & Lighting", LIGHTING_OPTIONS)
-            final_light = st.text_input("Lighting Khusus:", placeholder="Misal: Soft Neon Rim Light") if selected_light == "✏️️ Custom Lighting..." else selected_light
+            final_light = st.text_input("Lighting Khusus:", placeholder="Misal: Soft Neon Rim Light") if selected_light == "✏ Custom Lighting..." else selected_light
 
             selected_color = st.selectbox("Color Grading & Tone", COLOR_GRADING_OPTIONS)
             final_color = st.text_input("Color Grading Khusus:", placeholder="Misal: Vintage Sepia Tones") if selected_color == "✏️ Custom Color Grading..." else selected_color
@@ -525,9 +553,9 @@ else:
 
         st.divider()
 
-        # BLOCK 4: RECENT PROJECTS
+        # BLOCK 4: RECENT PROJECTS (TERISOLASI BERDASARKAN EMAIL)
         st.subheader("📂 Recent Projects")
-        recent_dict = load_recent_projects()
+        recent_dict = load_recent_projects(st.session_state.user_email)
         if recent_dict:
             selected_project_name = st.selectbox(
                 "Pilih Proyek Sebelumnya:",
@@ -548,7 +576,7 @@ else:
 
     if build_btn:
         if not active_activation_key or not active_activation_key.startswith("gsk_"):
-            st.error("⚠️️ Data aktivasi akun Anda tidak valid!")
+            st.error("⚠ Data aktivasi akun Anda tidak valid!")
         elif not project_title.strip():
             st.error("⚠️ Judul / Ide Utama Video wajib diisi terlebih dahulu!")
         else:
@@ -627,7 +655,7 @@ else:
                     st.session_state.show_bible = show_bible_data
                     st.session_state.scenes = formatted_scenes
 
-                    save_project_to_history(project_title, show_bible_data, formatted_scenes)
+                    save_project_to_history(st.session_state.user_email, project_title, show_bible_data, formatted_scenes)
                     st.success("✅ Project Bible & Adegan berhasil dibuat!")
 
     # DISPLAY MAIN CANVAS
@@ -711,7 +739,7 @@ else:
                                     new_img_p = call_groq_safe(active_activation_key, IMG_PROMPT_SYS, p_user_img, selected_model, is_json=False)
                                     if new_img_p:
                                         st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
-                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        save_project_to_history(st.session_state.user_email, st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
                                         st.rerun()
                         else:
                             if st.button(f"✨ Generate Prompt Image {s_num}", key=f"btn_gen_img_{s_num}", type="primary"):
@@ -719,7 +747,7 @@ else:
                                     new_img_p = call_groq_safe(active_activation_key, IMG_PROMPT_SYS, p_user_img, selected_model, is_json=False)
                                     if new_img_p:
                                         st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
-                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        save_project_to_history(st.session_state.user_email, st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
                                         st.rerun()
 
                     with col_p2:
@@ -735,7 +763,7 @@ else:
                                         st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
                                         if sc_idx + 1 < len(st.session_state.scenes):
                                             st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
-                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        save_project_to_history(st.session_state.user_email, st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
                                         st.rerun()
                         else:
                             if st.button(f"✨ Generate Prompt Video {s_num}", key=f"btn_gen_vid_{s_num}", type="primary"):
@@ -745,7 +773,7 @@ else:
                                         st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
                                         if sc_idx + 1 < len(st.session_state.scenes):
                                             st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
-                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        save_project_to_history(st.session_state.user_email, st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
                                         st.rerun()
 
     else:
