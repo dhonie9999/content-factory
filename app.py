@@ -14,6 +14,7 @@ import time
 import json
 import random
 import os
+import pandas as pd
 from groq import Groq
 
 # -----------------------------------------------------------------------------
@@ -88,7 +89,7 @@ st.markdown("""
             font-size: 1.1rem !important;
         }
         .stButton>button {
-            height: 3.2em; /* Lebih nyaman ditekan jari */
+            height: 3.2em;
             font-size: 0.95rem;
         }
     }
@@ -96,28 +97,34 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# 2. FILE PENYIMPANAN LOKAL
+# 2. FILE PENYIMPANAN DATABASE & PROYEK
 # -----------------------------------------------------------------------------
-CONFIG_FILE = ".activation_config.json"
+CSV_FILE = "license.csv"
 PROJECTS_FILE = ".recent_projects.json"
 
-def load_activation_key():
-    if os.path.exists(CONFIG_FILE):
+@st.cache_data(ttl=1)
+def load_users():
+    if os.path.exists(CSV_FILE):
         try:
-            with open(CONFIG_FILE, "r") as f:
-                data = json.load(f)
-                key = data.get("activation_code", "")
-                if not key.startswith("gsk_"):
-                    os.remove(CONFIG_FILE)
-                    return ""
-                return key
+            df = pd.read_csv(CSV_FILE, dtype=str)
+            df.columns = df.columns.str.strip()
+            if "email" in df.columns:
+                df["email"] = df["email"].str.strip()
+            if "active_session" in df.columns:
+                df["active_session"] = df["active_session"].str.strip()
+            return df
         except:
-            return ""
-    return ""
+            return pd.DataFrame(columns=["email", "expired_date", "active_session"])
+    else:
+        return pd.DataFrame(columns=["email", "expired_date", "active_session"])
 
-def save_activation_key(code):
-    with open(CONFIG_FILE, "w") as f:
-        json.dump({"activation_code": code}, f)
+def update_user_activation(user_email, activation_key):
+    if os.path.exists(CSV_FILE):
+        df = pd.read_csv(CSV_FILE, dtype=str)
+        df.columns = df.columns.str.strip()
+        df["email"] = df["email"].str.strip()
+        df.loc[df["email"] == user_email, "active_session"] = activation_key.strip()
+        df.to_csv(CSV_FILE, index=False)
 
 def load_recent_projects():
     if os.path.exists(PROJECTS_FILE):
@@ -312,385 +319,437 @@ def call_groq_safe(api_key, system_instruction, user_prompt, selected_model="ope
                 if attempt < max_retries - 1:
                     time.sleep((2 ** attempt) + random.uniform(0.5, 1.5))
     
-    st.error("❌ Aktivasi gagal diproses. Pastikan Kode Aktivasi Anda benar dan aktif.")
+    st.error("❌ Proses gagal diproses. Pastikan data aktivasi Anda valid.")
     return None
 
 # -----------------------------------------------------------------------------
-# 5. SESSION STATE INITIALIZATION
+# 5. SESSION STATE INITIALIZATION (AUTH & APP)
 # -----------------------------------------------------------------------------
-if "activation_code" not in st.session_state:
-    st.session_state.activation_code = load_activation_key()
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "user_email" not in st.session_state:
+    st.session_state.user_email = ""
+if "step" not in st.session_state:
+    st.session_state.step = "input_email"
 if "show_bible" not in st.session_state:
     st.session_state.show_bible = None
 if "scenes" not in st.session_state:
     st.session_state.scenes = []
 
-# -----------------------------------------------------------------------------
-# 6. SIDEBAR CONTROL PANEL
-# -----------------------------------------------------------------------------
-with st.sidebar:
-    st.title("🎬 Content Factory")
-    st.caption("AI Script & Visual Asset Generator Engine")
-    st.divider()
+# =============================================================================
+# 6. TAHAP AUTENTIKASI (LOGIN & AKTIVASI BERBASIS CSV)
+# =============================================================================
+if not st.session_state.logged_in:
+    st.title("🔐 Login & Aktivasi Akun")
+    st.write("Silakan masukkan akun terdaftar Anda untuk mengakses Factory Content Studio.")
 
-    # BLOCK 1: SISTEM AKTIVASI TOKEN (KODE AKTIVASI)
-    st.subheader("🔑 Status Kode Aktivasi")
-    
-    current_key = st.session_state.activation_code
-    is_valid_key = current_key.startswith("gsk_")
+    if st.session_state.step == "input_email":
+        with st.form("email_form"):
+            input_email = st.text_input("Masukkan Akun / Email:")
+            submit_email = st.form_submit_button("Lanjut")
 
-    if is_valid_key and not st.session_state.get("edit_activation", False):
-        st.success("🟢 **SYSTEM ACTIVATED**")
-        st.caption("Lisensi perangkat terverifikasi.")
-        if st.button("🔄 Ubah Kode Aktivasi", key="btn_change_act"):
-            st.session_state.edit_activation = True
+        if submit_email:
+            clean_email = input_email.strip()
+            if not clean_email:
+                st.error("❌ Akun tidak boleh kosong!")
+            else:
+                df_users = load_users()
+                if df_users.empty:
+                    st.error("❌ File database 'license.csv' tidak ditemukan atau kosong!")
+                else:
+                    user_match = df_users[df_users["email"] == clean_email]
+                    if not user_match.empty:
+                        st.session_state.user_email = clean_email
+                        saved_key = str(user_match.iloc[0]["active_session"]).strip()
+                        
+                        if saved_key != "" and saved_key != "nan" and pd.notna(saved_key):
+                            st.session_state.logged_in = True
+                            st.session_state.step = "app"
+                            st.rerun()
+                        else:
+                            st.session_state.step = "input_aktivasi"
+                            st.rerun()
+                    else:
+                        st.error("❌ Akun tidak ditemukan di database!")
+
+    elif st.session_state.step == "input_aktivasi":
+        st.warning("⚠️ Akun Anda belum memiliki data aktivasi. Masukkan kode aktivasi Anda di bawah ini.")
+
+        with st.form("aktivasi_form"):
+            # Di sini diperbolehkan menggunakan kata 'kode api' sesuai permintaan petunjuk teknis
+            input_apikey = st.text_input("Masukkan Kode Aktivasi (Groq API Key):", type="password")
+            submit_aktivasi = st.form_submit_button("Proses Aktivasi & Masuk")
+
+        with st.expander("📖 Panduan Cara Mengambil Kode Aktivasi"):
+            st.markdown("""
+            1. Buka website [Groq Console](https://console.groq.com/keys).
+            2. Masuk menggunakan akun Google atau GitHub Anda.
+            3. Masuk ke menu **API Keys** dan klik **Create API Key**.
+            4. Salin (copy) dan tempel (paste) kode api tersebut ke kolom di atas.
+            """)
+
+        if submit_aktivasi:
+            clean_key = input_apikey.strip()
+            if clean_key.startswith("gsk_"):
+                update_user_activation(st.session_state.user_email, clean_key)
+                st.session_state.logged_in = True
+                st.session_state.step = "app"
+                st.success("✅ Aktivasi Berhasil! Memasuki aplikasi...")
+                st.rerun()
+            else:
+                st.error("❌ Format aktivasi tidak valid! Harus diawali 'gsk_'")
+
+        if st.button("⬅️ Kembali ke Input Akun"):
+            st.session_state.step = "input_email"
             st.rerun()
-    else:
-        # TIPS AKTIVASI DENGAN LINK LANGSUNG KE GROQ CONSOLE
-        st.markdown("""
-            <div class="activation-box">
-            💡 <b>Tips Aktivasi:</b><br>
-            1. Buka <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a><br>
-            2. Buat atau create API key Anda.<br>
-            3. Segera tekan tombol <b>Copy</b> lalu paste kodenya di bawah ini dan simpan.
-            </div>
-        """, unsafe_allow_html=True)
 
-        input_code = st.text_input(
-            "Masukkan Kode Aktivasi *",
-            value="" if not is_valid_key else current_key,
-            type="password",
-            placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
-        )
-        if st.button("💾 Simpan Kode Aktivasi", type="primary"):
-            cleaned_input = input_code.strip()
-            if cleaned_input.startswith("gsk_"):
-                save_activation_key(cleaned_input)
-                st.session_state.activation_code = cleaned_input
-                st.session_state.edit_activation = False
-                st.success("✅ Kode Aktivasi Berhasil Disimpan!")
-                st.rerun()
-            else:
-                st.error("❌ Kode Aktivasi tidak valid! Harus diawali 'gsk_'")
-                
-    st.divider()
-
-    # BLOCK 2: INPUT UTAMA
-    project_title = st.text_input(
-        "1. Judul / Ide Utama Video (WAJIB) *",
-        placeholder="Misal: Kisah Tembok Besar China",
-        key="project_title"
-    )
-
-    custom_notes = st.text_area(
-        "2. Detail Cerita / Pesan Khusus AI (Opsional)",
-        placeholder="Arahkan AI, misal: 'Fokuskan pada penderitaan fisik pekerja paksa di bawah cuaca ekstrem'...",
-        height=120,
-        key="custom_notes"
-    )
-
-    st.subheader("⚙ Parameter Utama")
-
-    selected_type = st.selectbox("Jenis Video", VIDEO_TYPES)
-    final_type = st.text_input("Tulis Jenis Video Khusus:", placeholder="Misal: Micro-Documentary") if selected_type == "✏️ Custom Type..." else selected_type
-
-    selected_style = st.selectbox("Gaya Visual Graphics", VISUAL_STYLES)
-    final_style = st.text_input("Tulis Gaya Visual Khusus:", placeholder="Misal: 1990s Dark Synthwave") if selected_style == "✏️ Custom Visual Style..." else selected_style
-
-    col_e1, col_e2 = st.columns(2)
-    with col_e1:
-        selected_img_engine = st.selectbox("Target Image Engine", IMAGE_ENGINES)
-        final_img_engine = st.text_input("Image Engine Khusus:", placeholder="Misal: Recraft v3") if selected_img_engine == "✏️ Custom Image Engine..." else selected_img_engine
-
-    with col_e2:
-        selected_vid_engine = st.selectbox("Target Video Engine", VIDEO_ENGINES)
-        final_vid_engine = st.text_input("Video Engine Khusus:", placeholder="Misal: Kling v2") if selected_vid_engine == "✏️ Custom Video Engine..." else selected_vid_engine
-
-    selected_ratio = st.selectbox("Aspect Ratio / Format", ASPECT_RATIOS)
-    final_ratio = st.text_input("Tulis Ratio Khusus:", placeholder="Misal: 4:3 Vintage") if selected_ratio == "✏ Custom Ratio..." else selected_ratio
-
-    st.markdown("---")
-    
-    # ADVANCED VISUAL & CAMERA CONTROLS (EXPANDER)
-    with st.expander("🎥 Advanced Camera & Lighting Controls (Opsional)", expanded=False):
-        st.caption("Atur spesifikasi sinematografi mendalam:")
-        
-        selected_cam = st.selectbox("Sudut & Gerakan Kamera", CAMERA_SHOT_OPTIONS)
-        final_cam = st.text_input("Sudut Kamera Khusus:", placeholder="Misal: Macro 100mm Focus") if selected_cam == "✏️ Custom Camera Shot..." else selected_cam
-
-        selected_light = st.selectbox("Pencahayaan & Lighting", LIGHTING_OPTIONS)
-        final_light = st.text_input("Lighting Khusus:", placeholder="Misal: Soft Neon Rim Light") if selected_light == "✏️ Custom Lighting..." else selected_light
-
-        selected_color = st.selectbox("Color Grading & Tone", COLOR_GRADING_OPTIONS)
-        final_color = st.text_input("Color Grading Khusus:", placeholder="Misal: Vintage Sepia Tones") if selected_color == "✏️ Custom Color Grading..." else selected_color
-
-    st.markdown("---")
-    st.caption("🎬 **Kontrol Durasi & Audio**")
-
-    selected_dur = st.selectbox("Durasi Per Adegan", DURATION_OPTIONS)
-    if selected_dur == "✏️ Custom Durasi...":
-        custom_dur_val = st.number_input("Input Angka Durasi (Detik):", min_value=1, max_value=120, value=5, step=1)
-        final_duration = f"{custom_dur_val} Detik"
-    else:
-        final_duration = selected_dur
-
-    selected_sc_count = st.selectbox("Jumlah Adegan (Maks 10)", SCENE_COUNT_OPTIONS)
-    if selected_sc_count == "✏ Custom (Maksimal 10)...":
-        custom_sc_val = st.number_input("Input Jumlah Adegan (1-10):", min_value=1, max_value=10, value=5, step=1)
-        final_scene_count = f"{custom_sc_val} Scene"
-    else:
-        final_scene_count = selected_sc_count
-
-    final_voice = st.selectbox("Format Voice / Suara", VOICE_TYPES)
-    final_gender = st.selectbox("Profil / Gender Narator", NARRATOR_GENDER_OPTIONS)
-
-    selected_lang = st.selectbox("Bahasa Naskah / Narasi", LANGUAGE_OPTIONS)
-    final_language = st.text_input("Tulis Bahasa Khusus:", placeholder="Misal: Bahasa Jawa / Jepang") if selected_lang == "✏️ Custom Bahasa..." else selected_lang
-
-    st.markdown("---")
-
-    selected_model = st.selectbox(
-        "Mode Performa Engine",
-        options=["openai/gpt-oss-120b", "llama-3.3-70b-versatile"],
-        index=0
-    )
-
-    st.divider()
-
-    build_btn = st.button("🚀 BUILD PROJECT BIBLE & SCENES", type="primary")
-    
-    if st.button("🔄 Reset / Buat Proyek Baru"):
-        st.session_state.show_bible = None
-        st.session_state.scenes = []
-        st.rerun()
-
-    st.divider()
-
-    # BLOCK 4: RECENT PROJECTS
-    st.subheader("📂 Recent Projects")
-    recent_dict = load_recent_projects()
-    if recent_dict:
-        selected_project_name = st.selectbox(
-            "Pilih Proyek Sebelumnya:",
-            options=["-- Pilih Proyek --"] + list(recent_dict.keys())
-        )
-        if selected_project_name != "-- Pilih Proyek --":
-            if st.button("📂 Buka Proyek Ini"):
-                proj_data = recent_dict[selected_project_name]
-                st.session_state.show_bible = proj_data["show_bible"]
-                st.session_state.scenes = proj_data["scenes"]
-                st.success(f"Proyek '{selected_project_name}' berhasil dimuat!")
-                st.rerun()
-
-# -----------------------------------------------------------------------------
-# 7. MAIN CANVAS & SEQUENTIAL GENERATION LOGIC
-# -----------------------------------------------------------------------------
-st.title("🎬 Main Canvas & Script Studio")
-
-if build_btn:
-    if not st.session_state.activation_code or not st.session_state.activation_code.startswith("gsk_"):
-        st.error("⚠️ Silakan masukkan Kode Aktivasi yang valid terlebih dahulu!")
-    elif not project_title.strip():
-        st.error("⚠️ Judul / Ide Utama Video wajib diisi terlebih dahulu!")
-    else:
-        with st.spinner("⏳ Menghubungkan ke Engine & Menyiapkan Adegan..."):
-            sys_instruct = """
-            You are 'Factory Content Engine', an elite AI scriptwriter and visual asset director.
-            Generate a JSON object containing two main keys:
-            1. 'show_bible': Object containing summary of main_character, visual_theme, mood, continuity_rules, narrator_profile.
-            2. 'scenes': Array of objects, each containing:
-               - 'scene_num': integer
-               - 'narration': string (Voiceover text in requested language)
-               - 'dialogue': string (Character speech in requested language)
-            
-            STRICT NARRATION / DIALOGUE WORD LIMITS BASED ON DURATION:
-            - 3 Seconds: MAXIMUM 7-9 WORDS per scene.
-            - 5 Seconds: MAXIMUM 12-15 WORDS per scene.
-            - 6 Seconds: MAXIMUM 15-18 WORDS per scene.
-            - 10 Seconds: MAXIMUM 25-30 WORDS per scene.
-            Return strictly valid JSON only.
-            """
-
-            user_prompt = f"""
-            PROJECT SPECS:
-            - Title/Idea: {project_title}
-            - Custom Notes & Special Guidance: {custom_notes if custom_notes else 'None'}
-            - Video Type: {final_type}
-            - Visual Style: {final_style}
-            - Target Image AI Engine: {final_img_engine}
-            - Target Video AI Engine: {final_vid_engine}
-            - Aspect Ratio: {final_ratio}
-            - Camera Framing Preset: {final_cam}
-            - Lighting Preset: {final_light}
-            - Color Grading Preset: {final_color}
-            - STRICT Target Scene Duration: {final_duration}
-            - Requested Scene Count Limit: {final_scene_count} (STRICT MAXIMUM: 10 scenes)
-            - Voice/Audio Style Selected: {final_voice}
-            - Narrator Profile/Gender: {final_gender}
-            - Script Target Language: {final_language}
-            """
-
-            result = call_groq_safe(
-                api_key=st.session_state.activation_code,
-                system_instruction=sys_instruct,
-                user_prompt=user_prompt,
-                selected_model=selected_model,
-                is_json=True
-            )
-
-            if result:
-                show_bible_data = result.get("show_bible", {})
-                show_bible_data["title"] = project_title
-                show_bible_data["image_engine"] = final_img_engine
-                show_bible_data["video_engine"] = final_vid_engine
-                show_bible_data["ratio"] = final_ratio
-                show_bible_data["camera_spec"] = final_cam
-                show_bible_data["lighting_spec"] = final_light
-                show_bible_data["color_spec"] = final_color
-                show_bible_data["duration_setting"] = final_duration
-                show_bible_data["language_setting"] = final_language
-                show_bible_data["voice_setting"] = final_voice
-                show_bible_data["narrator_gender"] = final_gender
-
-                scenes_input = result.get("scenes", [])
-                
-                formatted_scenes = []
-                for idx, sc in enumerate(scenes_input):
-                    formatted_scenes.append({
-                        "scene_num": sc.get("scene_num", idx + 1),
-                        "narration": sc.get("narration", ""),
-                        "dialogue": sc.get("dialogue", ""),
-                        "prompt_image": "",
-                        "prompt_video": "",
-                        "is_unlocked": True if idx == 0 else False
-                    })
-
-                st.session_state.show_bible = show_bible_data
-                st.session_state.scenes = formatted_scenes
-
-                save_project_to_history(project_title, show_bible_data, formatted_scenes)
-                st.success("✅ Project Bible & Adegan berhasil dibuat!")
-
-# DISPLAY MAIN CANVAS
-if st.session_state.show_bible:
-    with st.expander("🟢 PROJECT BIBLE (Locked Continuity Rules)", expanded=True):
-        col1, col2, col3 = st.columns(3)
-        sb = st.session_state.show_bible
-        with col1:
-            st.write(f"**Judul:** {sb.get('title', '-')}")
-            st.write(f"**Karakter Utama:** {sb.get('main_character', '-')}")
-            st.write(f"**Bahasa Naskah:** {sb.get('language_setting', '-')}")
-            st.write(f"**Profil Narator:** {sb.get('narrator_gender', '-')}")
-        with col2:
-            st.write(f"**Visual Theme:** {sb.get('visual_theme', '-')}")
-            st.write(f"**Target Image Engine:** {sb.get('image_engine', '-')}")
-            st.write(f"**Target Video Engine:** {sb.get('video_engine', '-')}")
-            st.write(f"**Setting Durasi:** {sb.get('duration_setting', '-')}")
-        with col3:
-            st.write(f"**Format Ratio:** {sb.get('ratio', '-')}")
-            st.write(f"**Kamera/Framing:** {sb.get('camera_spec', '-')}")
-            st.write(f"**Lighting/Color:** {sb.get('lighting_spec', '-')} / {sb.get('color_spec', '-')}")
-
-    st.divider()
-
-    with st.expander("📋 Export All Script (Salin Seluruh Narasi & Dialog)", expanded=False):
-        full_script_txt = ""
-        for sc in st.session_state.scenes:
-            full_script_txt += f"Adegan {sc['scene_num']}:\n"
-            if sc['narration'] and sc['narration'] != "-":
-                full_script_txt += f"Narasi: {sc['narration']}\n"
-            if sc['dialogue'] and sc['dialogue'] != "-":
-                full_script_txt += f"Dialog: {sc['dialogue']}\n"
-            full_script_txt += "\n"
-        st.text_area("Salin teks naskah di bawah ini:", value=full_script_txt.strip(), height=150)
-
-    st.divider()
-
-    st.subheader("🎬 Breakdown Prompt & Naskah Per Adegan")
-
-    IMG_PROMPT_SYS = """You are a master AI Image Prompt Engineer (Midjourney, FLUX, Stable Diffusion).
-    CRITICAL RULES:
-    1. Output MUST be ONLY the specific image prompt for the SINGLE SCENE requested in English.
-    2. VISUAL vs AUDIO SEPARATION: Narration is AUDIO ONLY.
-    3. Incorporate requested camera framing, lighting, and color grading specs organically."""
-
-    VID_PROMPT_SYS = """You are a master AI Video Prompt Engineer for multimodal audio-video engines.
-    CRITICAL RULES:
-    1. Output MUST be ONLY the single-scene video prompt in English.
-    2. EXPLICITLY separate Voiceover/Narration audio from Character Dialogue audio in instructions."""
-
-    for sc_idx, sc in enumerate(st.session_state.scenes):
-        s_num = sc["scene_num"]
-        is_unlocked = sc["is_unlocked"]
-
-        with st.container(border=True):
-            if not is_unlocked:
-                st.markdown(f"### 🔒 Adegan {s_num} (Terkunci)")
-                st.caption(f"Selesaikan pembuatan Prompt pada **Adegan {s_num-1}** terlebih dahulu.")
-            else:
-                st.markdown(f"### 🟢 Adegan {s_num}")
-                
-                nar_txt = sc['narration'] if sc['narration'] and sc['narration'] != "-" else "N/A"
-                dia_txt = sc['dialogue'] if sc['dialogue'] and sc['dialogue'] != "-" else "N/A"
-                
-                word_cnt = len(nar_txt.split()) if nar_txt != "N/A" else 0
-                st.markdown(f"🎙️ **Narasi:** {nar_txt} `({word_cnt} kata)`")
-                st.markdown(f"💬 **Dialog:** {dia_txt}")
-
-                st.markdown("---")
-
-                col_p1, col_p2 = st.columns(2)
-
-                with col_p1:
-                    st.markdown("#### 🖼️ Prompt Image")
-                    p_user_img = f"Project Context: {st.session_state.show_bible}\nTarget Image Engine: {st.session_state.show_bible.get('image_engine', 'Universal')}\nTarget Scene: {s_num}\nNarration Context: {nar_txt}\nDialogue Context: {dia_txt}\nGenerate a single cinematic image prompt for Scene {s_num} ONLY."
-                    
-                    if sc["prompt_image"]:
-                        st.code(sc["prompt_image"], language="markdown")
-                        if st.button(f"🔄 Regenerate Prompt Image {s_num}", key=f"btn_regen_img_{s_num}"):
-                            with st.spinner(f"Mengkoreksi Prompt Image Adegan {s_num}..."):
-                                new_img_p = call_groq_safe(st.session_state.activation_code, IMG_PROMPT_SYS, p_user_img, selected_model, is_json=False)
-                                if new_img_p:
-                                    st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
-                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
-                                    st.rerun()
-                    else:
-                        if st.button(f"✨ Generate Prompt Image {s_num}", key=f"btn_gen_img_{s_num}", type="primary"):
-                            with st.spinner(f"Membuat Prompt Image Adegan {s_num}..."):
-                                new_img_p = call_groq_safe(st.session_state.activation_code, IMG_PROMPT_SYS, p_user_img, selected_model, is_json=False)
-                                if new_img_p:
-                                    st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
-                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
-                                    st.rerun()
-
-                with col_p2:
-                    st.markdown("#### 🎥 Prompt Video (Narasi + Dialog Audio)")
-                    p_user_vid = f"Project Context: {st.session_state.show_bible}\nTarget Video Engine: {st.session_state.show_bible.get('video_engine', 'Universal')}\nTarget Scene: {s_num}\nRequested Duration: {st.session_state.show_bible.get('duration_setting', '5 Detik')}\nEXACT NARRATION: \"{nar_txt}\"\nEXACT DIALOGUE: \"{dia_txt}\"\nGenerate video motion prompt for Scene {s_num} ONLY."
-
-                    if sc["prompt_video"]:
-                        st.code(sc["prompt_video"], language="markdown")
-                        if st.button(f"🔄 Regenerate Prompt Video {s_num}", key=f"btn_regen_vid_{s_num}"):
-                            with st.spinner(f"Mengkoreksi Prompt Video Adegan {s_num}..."):
-                                new_vid_p = call_groq_safe(st.session_state.activation_code, VID_PROMPT_SYS, p_user_vid, selected_model, is_json=False)
-                                if new_vid_p:
-                                    st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
-                                    if sc_idx + 1 < len(st.session_state.scenes):
-                                        st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
-                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
-                                    st.rerun()
-                    else:
-                        if st.button(f"✨ Generate Prompt Video {s_num}", key=f"btn_gen_vid_{s_num}", type="primary"):
-                            with st.spinner(f"Membuat Prompt Video Adegan {s_num}..."):
-                                new_vid_p = call_groq_safe(st.session_state.activation_code, VID_PROMPT_SYS, p_user_vid, selected_model, is_json=False)
-                                if new_vid_p:
-                                    st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
-                                    if sc_idx + 1 < len(st.session_state.scenes):
-                                        st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
-                                    save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
-                                    st.rerun()
-
+# =============================================================================
+# 7. APLIKASI UTAMA (JIKA SUDAH LOGIN / AKTIVASI OK)
+# =============================================================================
 else:
-    st.info("👈 Masukkan **Kode Aktivasi** & **Judul Proyek** di Sidebar sebelah kiri, lalu klik **BUILD PROJECT BIBLE & SCENES** untuk memulai!")
+    # Ambil kunci aktivasi dari file CSV untuk akun yang sedang login
+    df_users = load_users()
+    current_row = df_users[df_users["email"] == st.session_state.user_email]
+    active_activation_key = str(current_row.iloc[0]["active_session"]).strip()
+
+    # -----------------------------------------------------------------------------
+    # SIDEBAR CONTROL PANEL
+    # -----------------------------------------------------------------------------
+    with st.sidebar:
+        st.title("🎬 Content Factory")
+        st.caption("AI Script & Visual Asset Generator Engine")
+        st.divider()
+
+        # STATUS AKTIVASI DI SIDEBAR
+        st.write(f"👤 **Akun:** `{st.session_state.user_email}`")
+        st.markdown("---")
+        st.markdown("🟢 **AKTIVASI OK**")
+        st.markdown("---")
+
+        if st.button("🚪 Logout / Ganti Akun"):
+            st.session_state.logged_in = False
+            st.session_state.user_email = ""
+            st.session_state.step = "input_email"
+            st.rerun()
+
+        st.divider()
+
+        # BLOCK 2: INPUT UTAMA
+        project_title = st.text_input(
+            "1. Judul / Ide Utama Video (WAJIB) *",
+            placeholder="Misal: Kisah Tembok Besar China",
+            key="project_title"
+        )
+
+        custom_notes = st.text_area(
+            "2. Detail Cerita / Pesan Khusus AI (Opsional)",
+            placeholder="Arahkan AI, misal: 'Fokuskan pada penderitaan fisik pekerja paksa di bawah cuaca ekstrem'...",
+            height=120,
+            key="custom_notes"
+        )
+
+        st.subheader("⚙ Parameter Utama")
+
+        selected_type = st.selectbox("Jenis Video", VIDEO_TYPES)
+        final_type = st.text_input("Tulis Jenis Video Khusus:", placeholder="Misal: Micro-Documentary") if selected_type == "✏️ Custom Type..." else selected_type
+
+        selected_style = st.selectbox("Gaya Visual Graphics", VISUAL_STYLES)
+        final_style = st.text_input("Tulis Gaya Visual Khusus:", placeholder="Misal: 1990s Dark Synthwave") if selected_style == "✏️ Custom Visual Style..." else selected_style
+
+        col_e1, col_e2 = st.columns(2)
+        with col_e1:
+            selected_img_engine = st.selectbox("Target Image Engine", IMAGE_ENGINES)
+            final_img_engine = st.text_input("Image Engine Khusus:", placeholder="Misal: Recraft v3") if selected_img_engine == "✏️ Custom Image Engine..." else selected_img_engine
+
+        with col_e2:
+            selected_vid_engine = st.selectbox("Target Video Engine", VIDEO_ENGINES)
+            final_vid_engine = st.text_input("Video Engine Khusus:", placeholder="Misal: Kling v2") if selected_vid_engine == "✏️ Custom Video Engine..." else selected_vid_engine
+
+        selected_ratio = st.selectbox("Aspect Ratio / Format", ASPECT_RATIOS)
+        final_ratio = st.text_input("Tulis Ratio Khusus:", placeholder="Misal: 4:3 Vintage") if selected_ratio == "✏ Custom Ratio..." else selected_ratio
+
+        st.markdown("---")
+        
+        # ADVANCED VISUAL & CAMERA CONTROLS (EXPANDER)
+        with st.expander("🎥 Advanced Camera & Lighting Controls (Opsional)", expanded=False):
+            st.caption("Atur spesifikasi sinematografi mendalam:")
+            
+            selected_cam = st.selectbox("Sudut & Gerakan Kamera", CAMERA_SHOT_OPTIONS)
+            final_cam = st.text_input("Sudut Kamera Khusus:", placeholder="Misal: Macro 100mm Focus") if selected_cam == "✏️ Custom Camera Shot..." else selected_cam
+
+            selected_light = st.selectbox("Pencahayaan & Lighting", LIGHTING_OPTIONS)
+            final_light = st.text_input("Lighting Khusus:", placeholder="Misal: Soft Neon Rim Light") if selected_light == "✏️️ Custom Lighting..." else selected_light
+
+            selected_color = st.selectbox("Color Grading & Tone", COLOR_GRADING_OPTIONS)
+            final_color = st.text_input("Color Grading Khusus:", placeholder="Misal: Vintage Sepia Tones") if selected_color == "✏️ Custom Color Grading..." else selected_color
+
+        st.markdown("---")
+        st.caption("🎬 **Kontrol Durasi & Audio**")
+
+        selected_dur = st.selectbox("Durasi Per Adegan", DURATION_OPTIONS)
+        if selected_dur == "✏️ Custom Durasi...":
+            custom_dur_val = st.number_input("Input Angka Durasi (Detik):", min_value=1, max_value=120, value=5, step=1)
+            final_duration = f"{custom_dur_val} Detik"
+        else:
+            final_duration = selected_dur
+
+        selected_sc_count = st.selectbox("Jumlah Adegan (Maks 10)", SCENE_COUNT_OPTIONS)
+        if selected_sc_count == "✏ Custom (Maksimal 10)...":
+            custom_sc_val = st.number_input("Input Jumlah Adegan (1-10):", min_value=1, max_value=10, value=5, step=1)
+            final_scene_count = f"{custom_sc_val} Scene"
+        else:
+            final_scene_count = selected_sc_count
+
+        final_voice = st.selectbox("Format Voice / Suara", VOICE_TYPES)
+        final_gender = st.selectbox("Profil / Gender Narator", NARRATOR_GENDER_OPTIONS)
+
+        selected_lang = st.selectbox("Bahasa Naskah / Narasi", LANGUAGE_OPTIONS)
+        final_language = st.text_input("Tulis Bahasa Khusus:", placeholder="Misal: Bahasa Jawa / Jepang") if selected_lang == "✏️ Custom Bahasa..." else selected_lang
+
+        st.markdown("---")
+
+        selected_model = st.selectbox(
+            "Mode Performa Engine",
+            options=["openai/gpt-oss-120b", "llama-3.3-70b-versatile"],
+            index=0
+        )
+
+        st.divider()
+
+        build_btn = st.button("🚀 BUILD PROJECT BIBLE & SCENES", type="primary")
+        
+        if st.button("🔄 Reset / Buat Proyek Baru"):
+            st.session_state.show_bible = None
+            st.session_state.scenes = []
+            st.rerun()
+
+        st.divider()
+
+        # BLOCK 4: RECENT PROJECTS
+        st.subheader("📂 Recent Projects")
+        recent_dict = load_recent_projects()
+        if recent_dict:
+            selected_project_name = st.selectbox(
+                "Pilih Proyek Sebelumnya:",
+                options=["-- Pilih Proyek --"] + list(recent_dict.keys())
+            )
+            if selected_project_name != "-- Pilih Proyek --":
+                if st.button("📂 Buka Proyek Ini"):
+                    proj_data = recent_dict[selected_project_name]
+                    st.session_state.show_bible = proj_data["show_bible"]
+                    st.session_state.scenes = proj_data["scenes"]
+                    st.success(f"Proyek '{selected_project_name}' berhasil dimuat!")
+                    st.rerun()
+
+    # -----------------------------------------------------------------------------
+    # 8. MAIN CANVAS & SEQUENTIAL GENERATION LOGIC
+    # -----------------------------------------------------------------------------
+    st.title("🎬 Main Canvas & Script Studio")
+
+    if build_btn:
+        if not active_activation_key or not active_activation_key.startswith("gsk_"):
+            st.error("⚠️️ Data aktivasi akun Anda tidak valid!")
+        elif not project_title.strip():
+            st.error("⚠️ Judul / Ide Utama Video wajib diisi terlebih dahulu!")
+        else:
+            with st.spinner("⏳ Menghubungkan ke Engine & Menyiapkan Adegan..."):
+                sys_instruct = """
+                You are 'Factory Content Engine', an elite AI scriptwriter and visual asset director.
+                Generate a JSON object containing two main keys:
+                1. 'show_bible': Object containing summary of main_character, visual_theme, mood, continuity_rules, narrator_profile.
+                2. 'scenes': Array of objects, each containing:
+                   - 'scene_num': integer
+                   - 'narration': string (Voiceover text in requested language)
+                   - 'dialogue': string (Character speech in requested language)
+                
+                STRICT NARRATION / DIALOGUE WORD LIMITS BASED ON DURATION:
+                - 3 Seconds: MAXIMUM 7-9 WORDS per scene.
+                - 5 Seconds: MAXIMUM 12-15 WORDS per scene.
+                - 6 Seconds: MAXIMUM 15-18 WORDS per scene.
+                - 10 Seconds: MAXIMUM 25-30 WORDS per scene.
+                Return strictly valid JSON only.
+                """
+
+                user_prompt = f"""
+                PROJECT SPECS:
+                - Title/Idea: {project_title}
+                - Custom Notes & Special Guidance: {custom_notes if custom_notes else 'None'}
+                - Video Type: {final_type}
+                - Visual Style: {final_style}
+                - Target Image AI Engine: {final_img_engine}
+                - Target Video AI Engine: {final_vid_engine}
+                - Aspect Ratio: {final_ratio}
+                - Camera Framing Preset: {final_cam}
+                - Lighting Preset: {final_light}
+                - Color Grading Preset: {final_color}
+                - STRICT Target Scene Duration: {final_duration}
+                - Requested Scene Count Limit: {final_scene_count} (STRICT MAXIMUM: 10 scenes)
+                - Voice/Audio Style Selected: {final_voice}
+                - Narrator Profile/Gender: {final_gender}
+                - Script Target Language: {final_language}
+                """
+
+                result = call_groq_safe(
+                    api_key=active_activation_key,
+                    system_instruction=sys_instruct,
+                    user_prompt=user_prompt,
+                    selected_model=selected_model,
+                    is_json=True
+                )
+
+                if result:
+                    show_bible_data = result.get("show_bible", {})
+                    show_bible_data["title"] = project_title
+                    show_bible_data["image_engine"] = final_img_engine
+                    show_bible_data["video_engine"] = final_vid_engine
+                    show_bible_data["ratio"] = final_ratio
+                    show_bible_data["camera_spec"] = final_cam
+                    show_bible_data["lighting_spec"] = final_light
+                    show_bible_data["color_spec"] = final_color
+                    show_bible_data["duration_setting"] = final_duration
+                    show_bible_data["language_setting"] = final_language
+                    show_bible_data["voice_setting"] = final_voice
+                    show_bible_data["narrator_gender"] = final_gender
+
+                    scenes_input = result.get("scenes", [])
+                    
+                    formatted_scenes = []
+                    for idx, sc in enumerate(scenes_input):
+                        formatted_scenes.append({
+                            "scene_num": sc.get("scene_num", idx + 1),
+                            "narration": sc.get("narration", ""),
+                            "dialogue": sc.get("dialogue", ""),
+                            "prompt_image": "",
+                            "prompt_video": "",
+                            "is_unlocked": True if idx == 0 else False
+                        })
+
+                    st.session_state.show_bible = show_bible_data
+                    st.session_state.scenes = formatted_scenes
+
+                    save_project_to_history(project_title, show_bible_data, formatted_scenes)
+                    st.success("✅ Project Bible & Adegan berhasil dibuat!")
+
+    # DISPLAY MAIN CANVAS
+    if st.session_state.show_bible:
+        with st.expander("🟢 PROJECT BIBLE (Locked Continuity Rules)", expanded=True):
+            col1, col2, col3 = st.columns(3)
+            sb = st.session_state.show_bible
+            with col1:
+                st.write(f"**Judul:** {sb.get('title', '-')}")
+                st.write(f"**Karakter Utama:** {sb.get('main_character', '-')}")
+                st.write(f"**Bahasa Naskah:** {sb.get('language_setting', '-')}")
+                st.write(f"**Profil Narator:** {sb.get('narrator_gender', '-')}")
+            with col2:
+                st.write(f"**Visual Theme:** {sb.get('visual_theme', '-')}")
+                st.write(f"**Target Image Engine:** {sb.get('image_engine', '-')}")
+                st.write(f"**Target Video Engine:** {sb.get('video_engine', '-')}")
+                st.write(f"**Setting Durasi:** {sb.get('duration_setting', '-')}")
+            with col3:
+                st.write(f"**Format Ratio:** {sb.get('ratio', '-')}")
+                st.write(f"**Kamera/Framing:** {sb.get('camera_spec', '-')}")
+                st.write(f"**Lighting/Color:** {sb.get('lighting_spec', '-')} / {sb.get('color_spec', '-')}")
+
+        st.divider()
+
+        with st.expander("📋 Export All Script (Salin Seluruh Narasi & Dialog)", expanded=False):
+            full_script_txt = ""
+            for sc in st.session_state.scenes:
+                full_script_txt += f"Adegan {sc['scene_num']}:\n"
+                if sc['narration'] and sc['narration'] != "-":
+                    full_script_txt += f"Narasi: {sc['narration']}\n"
+                if sc['dialogue'] and sc['dialogue'] != "-":
+                    full_script_txt += f"Dialog: {sc['dialogue']}\n"
+                full_script_txt += "\n"
+            st.text_area("Salin teks naskah di bawah ini:", value=full_script_txt.strip(), height=150)
+
+        st.divider()
+
+        st.subheader("🎬 Breakdown Prompt & Naskah Per Adegan")
+
+        IMG_PROMPT_SYS = """You are a master AI Image Prompt Engineer (Midjourney, FLUX, Stable Diffusion).
+        CRITICAL RULES:
+        1. Output MUST be ONLY the specific image prompt for the SINGLE SCENE requested in English.
+        2. VISUAL vs AUDIO SEPARATION: Narration is AUDIO ONLY.
+        3. Incorporate requested camera framing, lighting, and color grading specs organically."""
+
+        VID_PROMPT_SYS = """You are a master AI Video Prompt Engineer for multimodal audio-video engines.
+        CRITICAL RULES:
+        1. Output MUST be ONLY the single-scene video prompt in English.
+        2. EXPLICITLY separate Voiceover/Narration audio from Character Dialogue audio in instructions."""
+
+        for sc_idx, sc in enumerate(st.session_state.scenes):
+            s_num = sc["scene_num"]
+            is_unlocked = sc["is_unlocked"]
+
+            with st.container(border=True):
+                if not is_unlocked:
+                    st.markdown(f"### 🔒 Adegan {s_num} (Terkunci)")
+                    st.caption(f"Selesaikan pembuatan Prompt pada **Adegan {s_num-1}** terlebih dahulu.")
+                else:
+                    st.markdown(f"### 🟢 Adegan {s_num}")
+                    
+                    nar_txt = sc['narration'] if sc['narration'] and sc['narration'] != "-" else "N/A"
+                    dia_txt = sc['dialogue'] if sc['dialogue'] and sc['dialogue'] != "-" else "N/A"
+                    
+                    word_cnt = len(nar_txt.split()) if nar_txt != "N/A" else 0
+                    st.markdown(f"🎙️ **Narasi:** {nar_txt} `({word_cnt} kata)`")
+                    st.markdown(f"💬 **Dialog:** {dia_txt}")
+
+                    st.markdown("---")
+
+                    col_p1, col_p2 = st.columns(2)
+
+                    with col_p1:
+                        st.markdown("#### 🖼️ Prompt Image")
+                        p_user_img = f"Project Context: {st.session_state.show_bible}\nTarget Image Engine: {st.session_state.show_bible.get('image_engine', 'Universal')}\nTarget Scene: {s_num}\nNarration Context: {nar_txt}\nDialogue Context: {dia_txt}\nGenerate a single cinematic image prompt for Scene {s_num} ONLY."
+                        
+                        if sc["prompt_image"]:
+                            st.code(sc["prompt_image"], language="markdown")
+                            if st.button(f"🔄 Regenerate Prompt Image {s_num}", key=f"btn_regen_img_{s_num}"):
+                                with st.spinner(f"Mengkoreksi Prompt Image Adegan {s_num}..."):
+                                    new_img_p = call_groq_safe(active_activation_key, IMG_PROMPT_SYS, p_user_img, selected_model, is_json=False)
+                                    if new_img_p:
+                                        st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
+                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        st.rerun()
+                        else:
+                            if st.button(f"✨ Generate Prompt Image {s_num}", key=f"btn_gen_img_{s_num}", type="primary"):
+                                with st.spinner(f"Membuat Prompt Image Adegan {s_num}..."):
+                                    new_img_p = call_groq_safe(active_activation_key, IMG_PROMPT_SYS, p_user_img, selected_model, is_json=False)
+                                    if new_img_p:
+                                        st.session_state.scenes[sc_idx]["prompt_image"] = new_img_p.strip()
+                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        st.rerun()
+
+                    with col_p2:
+                        st.markdown("#### 🎥 Prompt Video (Narasi + Dialog Audio)")
+                        p_user_vid = f"Project Context: {st.session_state.show_bible}\nTarget Video Engine: {st.session_state.show_bible.get('video_engine', 'Universal')}\nTarget Scene: {s_num}\nRequested Duration: {st.session_state.show_bible.get('duration_setting', '5 Detik')}\nEXACT NARRATION: \"{nar_txt}\"\nEXACT DIALOGUE: \"{dia_txt}\"\nGenerate video motion prompt for Scene {s_num} ONLY."
+
+                        if sc["prompt_video"]:
+                            st.code(sc["prompt_video"], language="markdown")
+                            if st.button(f"🔄 Regenerate Prompt Video {s_num}", key=f"btn_regen_vid_{s_num}"):
+                                with st.spinner(f"Mengkoreksi Prompt Video Adegan {s_num}..."):
+                                    new_vid_p = call_groq_safe(active_activation_key, VID_PROMPT_SYS, p_user_vid, selected_model, is_json=False)
+                                    if new_vid_p:
+                                        st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
+                                        if sc_idx + 1 < len(st.session_state.scenes):
+                                            st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
+                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        st.rerun()
+                        else:
+                            if st.button(f"✨ Generate Prompt Video {s_num}", key=f"btn_gen_vid_{s_num}", type="primary"):
+                                with st.spinner(f"Membuat Prompt Video Adegan {s_num}..."):
+                                    new_vid_p = call_groq_safe(active_activation_key, VID_PROMPT_SYS, p_user_vid, selected_model, is_json=False)
+                                    if new_vid_p:
+                                        st.session_state.scenes[sc_idx]["prompt_video"] = new_vid_p.strip()
+                                        if sc_idx + 1 < len(st.session_state.scenes):
+                                            st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
+                                        save_project_to_history(st.session_state.show_bible["title"], st.session_state.show_bible, st.session_state.scenes)
+                                        st.rerun()
+
+    else:
+        st.info("👈 Masukkan **Judul Proyek** & atur parameter di Sidebar sebelah kiri, lalu klik **BUILD PROJECT BIBLE & SCENES** untuk memulai!")
 
 # -----------------------------------------------------------------------------
 # FOOTER & COPYRIGHT NOTICE
