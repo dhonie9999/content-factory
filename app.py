@@ -102,7 +102,6 @@ st.markdown("""
 # -----------------------------------------------------------------------------
 CSV_FILE = "license.csv"
 
-@st.cache_data(ttl=1)
 def load_users():
     if os.path.exists(CSV_FILE):
         try:
@@ -126,7 +125,7 @@ def update_user_activation(user_email, activation_key):
         df.loc[df["email"] == user_email, "active_session"] = activation_key.strip()
         df.to_csv(CSV_FILE, index=False)
 
-# Fungsi riwayat proyek spesifik berdasarkan email pengguna (Isolasi Data)
+# Fungsi riwayat proyek spesifik berdasarkan email pengguna (Isolasi Data Lokal)
 def get_user_history_filename(email):
     safe_email = re.sub(r'[^a-zA-Z0-9]', '_', email)
     return f".recent_projects_{safe_email}.json"
@@ -138,11 +137,22 @@ def load_recent_projects(email):
     if os.path.exists(filename):
         try:
             with open(filename, "r") as f:
-                return json.load(f)
+                projects = json.load(f)
+                # Normalisasi otomatis jika ada proyek lama yang pakai format 'narration'/'dialogue'
+                for proj_name, proj_data in projects.items():
+                    if "scenes" in proj_data:
+                        for sc in proj_data["scenes"]:
+                            if "script_text" not in sc:
+                                nar = sc.get("narration", "")
+                                dia = sc.get("dialogue", "")
+                                if nar and dia and nar != "N/A" and dia != "N/A":
+                                    sc["script_text"] = f"Narasi: {nar} | Dialog: {dia}"
+                                else:
+                                    sc["script_text"] = nar if nar and nar != "N/A" else (dia if dia else "-")
+                return projects
         except:
             return {}
     return {}
-
 def save_project_to_history(email, title, show_bible, scenes):
     if not email:
         return
@@ -236,13 +246,6 @@ SCENE_COUNT_OPTIONS = [
     "✏ Custom (Maksimal 10)..."
 ]
 
-VOICE_TYPES = [
-    "AI AUTO / Adaptif (Default)",
-    "Narasi / Voiceover Only",
-    "Dialog Karakter Only",
-    "Gabungan (Narasi + Dialog)"
-]
-
 NARRATOR_GENDER_OPTIONS = [
     "AI AUTO / Bebas (Default)",
     "Pria (Male Voice)",
@@ -254,7 +257,7 @@ LANGUAGE_OPTIONS = [
     "AI AUTO / Ikuti Input (Default)",
     "Bahasa Indonesia",
     "Bahasa Inggris (English)",
-    "✏️ Custom Bahasa..."
+    "✏️️ Custom Bahasa..."
 ]
 
 CAMERA_SHOT_OPTIONS = [
@@ -268,7 +271,7 @@ CAMERA_SHOT_OPTIONS = [
     "High Angle / Top-Down Bird's Eye View",
     "Drone Flythrough / Tracking Shot",
     "Orbiting Dynamic Camera Motion",
-    "✏️️ Custom Camera Shot..."
+    "✏ Custom Camera Shot..."
 ]
 
 LIGHTING_OPTIONS = [
@@ -291,7 +294,7 @@ COLOR_GRADING_OPTIONS = [
     "Pastel Aesthetic / Soft Dreamy Tones",
     "Vibrant High-Saturated Color",
     "Desaturated Dark & Gritty",
-    "✏️ Custom Color Grading..."
+    "✏️️ Custom Color Grading..."
 ]
 
 GROQ_MODELS = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile"]
@@ -334,7 +337,7 @@ def call_groq_safe(api_key, system_instruction, user_prompt, selected_model="ope
     return None
 
 # -----------------------------------------------------------------------------
-# 5. SESSION STATE INITIALIZATION & QUERY PARAMS (ANTI-LOGOUT SAAT REFRESH)
+# 5. SESSION STATE INITIALIZATION & SECURE SINGLE-SESSION / ANTI-LEAKING LOGIC
 # -----------------------------------------------------------------------------
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -347,26 +350,24 @@ if "show_bible" not in st.session_state:
 if "scenes" not in st.session_state:
     st.session_state.scenes = []
 
-# Sinkronisasi parameter URL untuk pemulihan sesi otomatis saat browser di-refresh (khususnya di HP)
+# Mencegah Session Leaking via URL:
+# Jika ada link mentah ber-parameter `?session_user=...`, jangan langsung loloskan login.
+# Wajibkan sistem membersihkan parameter URL dan memaksa user melalui validasi keamanan / login bersih.
 query_params = st.query_params
-if not st.session_state.logged_in and "session_user" in query_params:
-    saved_email = query_params["session_user"].strip()
-    df_users = load_users()
-    if not df_users.empty:
-        user_match = df_users[df_users["email"] == saved_email]
-        if not user_match.empty:
-            saved_key = str(user_match.iloc[0]["active_session"]).strip()
-            if saved_key != "" and saved_key != "nan" and pd.notna(saved_key):
-                st.session_state.logged_in = True
-                st.session_state.user_email = saved_email
-                st.session_state.step = "app"
+if "session_user" in query_params:
+    # Bersihkan parameter dari URL agar link tidak bisa disebar sembarangan untuk membobol sesi
+    st.query_params.clear()
+    # Paksa reset status login agar masuk ke halaman login bersih
+    st.session_state.logged_in = False
+    st.session_state.user_email = ""
+    st.session_state.step = "input_email"
 
 # =============================================================================
-# 6. TAHAP AUTENTIKASI (LOGIN & AKTIVASI BERBASIS CSV)
+# 6. TAHAP AUTENTIKASI (LOGIN & AKTIVASI BERBASIS CSV DENGAN SINGLE-SESSION)
 # =============================================================================
 if not st.session_state.logged_in:
     st.title("🔐 Login & Aktivasi Akun")
-    st.write("Silakan masukkan akun terdaftar Anda untuk mengakses Factory Content Studio.")
+    st.write("Silakan masukkan akun terdaftar Anda untuk mengakses Factory Content Studio secara aman.")
 
     if st.session_state.step == "input_email":
         with st.form("email_form"):
@@ -390,7 +391,7 @@ if not st.session_state.logged_in:
                         if saved_key != "" and saved_key != "nan" and pd.notna(saved_key):
                             st.session_state.logged_in = True
                             st.session_state.step = "app"
-                            st.query_params["session_user"] = clean_email
+                            st.success("✅ Berhasil masuk!")
                             st.rerun()
                         else:
                             st.session_state.step = "input_aktivasi"
@@ -419,7 +420,6 @@ if not st.session_state.logged_in:
                 update_user_activation(st.session_state.user_email, clean_key)
                 st.session_state.logged_in = True
                 st.session_state.step = "app"
-                st.query_params["session_user"] = st.session_state.user_email
                 st.success("✅ Aktivasi Berhasil! Memasuki aplikasi...")
                 st.rerun()
             else:
@@ -456,8 +456,6 @@ else:
             st.session_state.logged_in = False
             st.session_state.user_email = ""
             st.session_state.step = "input_email"
-            if "session_user" in st.query_params:
-                del st.query_params["session_user"]
             st.rerun()
 
         st.divider()
@@ -512,7 +510,7 @@ else:
             final_color = st.text_input("Color Grading Khusus:", placeholder="Misal: Vintage Sepia Tones") if selected_color == "✏️ Custom Color Grading..." else selected_color
 
         st.markdown("---")
-        st.caption("🎬 **Kontrol Durasi & Audio**")
+        st.caption("🎬 **Kontrol Durasi & Karakter Suara**")
 
         selected_dur = st.selectbox("Durasi Per Adegan", DURATION_OPTIONS)
         if selected_dur == "✏️ Custom Durasi...":
@@ -528,11 +526,12 @@ else:
         else:
             final_scene_count = selected_sc_count
 
-        final_voice = st.selectbox("Format Voice / Suara", VOICE_TYPES)
-        final_gender = st.selectbox("Profil / Gender Narator", NARRATOR_GENDER_OPTIONS)
+        # Catatan: Opsi Narasi vs Dialog yang membingungkan telah dihapus total.
+        # Engine sekarang fokus pada narasi/skrip utama yang stabil dan konsisten.
+        final_gender = st.selectbox("Profil / Karakter Suara & Konsistensi", NARRATOR_GENDER_OPTIONS)
 
         selected_lang = st.selectbox("Bahasa Naskah / Narasi", LANGUAGE_OPTIONS)
-        final_language = st.text_input("Tulis Bahasa Khusus:", placeholder="Misal: Bahasa Jawa / Jepang") if selected_lang == "✏️ Custom Bahasa..." else selected_lang
+        final_language = st.text_input("Tulis Bahasa Khusus:", placeholder="Misal: Bahasa Jawa / Jepang") if selected_lang == "✏️️ Custom Bahasa..." else selected_lang
 
         st.markdown("---")
 
@@ -553,7 +552,7 @@ else:
 
         st.divider()
 
-        # BLOCK 4: RECENT PROJECTS (TERISOLASI BERDASARKAN EMAIL)
+        # BLOCK 4: RECENT PROJECTS (TERISOLASI BERDASARKAN EMAIL / USERID)
         st.subheader("📂 Recent Projects")
         recent_dict = load_recent_projects(st.session_state.user_email)
         if recent_dict:
@@ -584,13 +583,12 @@ else:
                 sys_instruct = """
                 You are 'Factory Content Engine', an elite AI scriptwriter and visual asset director.
                 Generate a JSON object containing two main keys:
-                1. 'show_bible': Object containing summary of main_character, visual_theme, mood, continuity_rules, narrator_profile.
+                1. 'show_bible': Object containing summary of main_character, visual_theme, mood, continuity_rules, voice_profile.
                 2. 'scenes': Array of objects, each containing:
                    - 'scene_num': integer
-                   - 'narration': string (Voiceover text in requested language)
-                   - 'dialogue': string (Character speech in requested language)
+                   - 'script_text': string (Unified, highly consistent narrative and descriptive script in the requested language, avoiding mixed-up dialogue confusion)
                 
-                STRICT NARRATION / DIALOGUE WORD LIMITS BASED ON DURATION:
+                STRICT SCRIPT WORD LIMITS BASED ON DURATION:
                 - 3 Seconds: MAXIMUM 7-9 WORDS per scene.
                 - 5 Seconds: MAXIMUM 12-15 WORDS per scene.
                 - 6 Seconds: MAXIMUM 15-18 WORDS per scene.
@@ -612,8 +610,7 @@ else:
                 - Color Grading Preset: {final_color}
                 - STRICT Target Scene Duration: {final_duration}
                 - Requested Scene Count Limit: {final_scene_count} (STRICT MAXIMUM: 10 scenes)
-                - Voice/Audio Style Selected: {final_voice}
-                - Narrator Profile/Gender: {final_gender}
+                - Voice Profile / Consistency: {final_gender}
                 - Script Target Language: {final_language}
                 """
 
@@ -636,8 +633,7 @@ else:
                     show_bible_data["color_spec"] = final_color
                     show_bible_data["duration_setting"] = final_duration
                     show_bible_data["language_setting"] = final_language
-                    show_bible_data["voice_setting"] = final_voice
-                    show_bible_data["narrator_gender"] = final_gender
+                    show_bible_data["voice_profile"] = final_gender
 
                     scenes_input = result.get("scenes", [])
                     
@@ -645,8 +641,7 @@ else:
                     for idx, sc in enumerate(scenes_input):
                         formatted_scenes.append({
                             "scene_num": sc.get("scene_num", idx + 1),
-                            "narration": sc.get("narration", ""),
-                            "dialogue": sc.get("dialogue", ""),
+                            "script_text": sc.get("script_text", sc.get("narration", "")),
                             "prompt_image": "",
                             "prompt_video": "",
                             "is_unlocked": True if idx == 0 else False
@@ -667,7 +662,7 @@ else:
                 st.write(f"**Judul:** {sb.get('title', '-')}")
                 st.write(f"**Karakter Utama:** {sb.get('main_character', '-')}")
                 st.write(f"**Bahasa Naskah:** {sb.get('language_setting', '-')}")
-                st.write(f"**Profil Narator:** {sb.get('narrator_gender', '-')}")
+                st.write(f"**Profil Suara:** {sb.get('voice_profile', '-')}")
             with col2:
                 st.write(f"**Visual Theme:** {sb.get('visual_theme', '-')}")
                 st.write(f"**Target Image Engine:** {sb.get('image_engine', '-')}")
@@ -680,15 +675,10 @@ else:
 
         st.divider()
 
-        with st.expander("📋 Export All Script (Salin Seluruh Narasi & Dialog)", expanded=False):
+        with st.expander("📋 Export All Script (Salin Seluruh Naskah)", expanded=False):
             full_script_txt = ""
             for sc in st.session_state.scenes:
-                full_script_txt += f"Adegan {sc['scene_num']}:\n"
-                if sc['narration'] and sc['narration'] != "-":
-                    full_script_txt += f"Narasi: {sc['narration']}\n"
-                if sc['dialogue'] and sc['dialogue'] != "-":
-                    full_script_txt += f"Dialog: {sc['dialogue']}\n"
-                full_script_txt += "\n"
+                full_script_txt += f"Adegan {sc['scene_num']}:\n{sc['script_text']}\n\n"
             st.text_area("Salin teks naskah di bawah ini:", value=full_script_txt.strip(), height=150)
 
         st.divider()
@@ -698,13 +688,12 @@ else:
         IMG_PROMPT_SYS = """You are a master AI Image Prompt Engineer (Midjourney, FLUX, Stable Diffusion).
         CRITICAL RULES:
         1. Output MUST be ONLY the specific image prompt for the SINGLE SCENE requested in English.
-        2. VISUAL vs AUDIO SEPARATION: Narration is AUDIO ONLY.
-        3. Incorporate requested camera framing, lighting, and color grading specs organically."""
+        2. Incorporate requested camera framing, lighting, and color grading specs organically."""
 
         VID_PROMPT_SYS = """You are a master AI Video Prompt Engineer for multimodal audio-video engines.
         CRITICAL RULES:
         1. Output MUST be ONLY the single-scene video prompt in English.
-        2. EXPLICITLY separate Voiceover/Narration audio from Character Dialogue audio in instructions."""
+        2. Ensure strict consistency in character gender, voice, and visual style."""
 
         for sc_idx, sc in enumerate(st.session_state.scenes):
             s_num = sc["scene_num"]
@@ -717,12 +706,10 @@ else:
                 else:
                     st.markdown(f"### 🟢 Adegan {s_num}")
                     
-                    nar_txt = sc['narration'] if sc['narration'] and sc['narration'] != "-" else "N/A"
-                    dia_txt = sc['dialogue'] if sc['dialogue'] and sc['dialogue'] != "-" else "N/A"
+                    script_txt = sc['script_text'] if sc['script_text'] and sc['script_text'] != "-" else "N/A"
+                    word_cnt = len(script_txt.split()) if script_txt != "N/A" else 0
                     
-                    word_cnt = len(nar_txt.split()) if nar_txt != "N/A" else 0
-                    st.markdown(f"🎙️ **Narasi:** {nar_txt} `({word_cnt} kata)`")
-                    st.markdown(f"💬 **Dialog:** {dia_txt}")
+                    st.markdown(f"🎙️ **Naskah / Voiceover:** {script_txt} `({word_cnt} kata)`")
 
                     st.markdown("---")
 
@@ -730,7 +717,7 @@ else:
 
                     with col_p1:
                         st.markdown("#### 🖼️ Prompt Image")
-                        p_user_img = f"Project Context: {st.session_state.show_bible}\nTarget Image Engine: {st.session_state.show_bible.get('image_engine', 'Universal')}\nTarget Scene: {s_num}\nNarration Context: {nar_txt}\nDialogue Context: {dia_txt}\nGenerate a single cinematic image prompt for Scene {s_num} ONLY."
+                        p_user_img = f"Project Context: {st.session_state.show_bible}\nTarget Image Engine: {st.session_state.show_bible.get('image_engine', 'Universal')}\nTarget Scene: {s_num}\nScript Context: {script_txt}\nGenerate a single cinematic image prompt for Scene {s_num} ONLY."
                         
                         if sc["prompt_image"]:
                             st.code(sc["prompt_image"], language="markdown")
@@ -751,8 +738,8 @@ else:
                                         st.rerun()
 
                     with col_p2:
-                        st.markdown("#### 🎥 Prompt Video (Narasi + Dialog Audio)")
-                        p_user_vid = f"Project Context: {st.session_state.show_bible}\nTarget Video Engine: {st.session_state.show_bible.get('video_engine', 'Universal')}\nTarget Scene: {s_num}\nRequested Duration: {st.session_state.show_bible.get('duration_setting', '5 Detik')}\nEXACT NARRATION: \"{nar_txt}\"\nEXACT DIALOGUE: \"{dia_txt}\"\nGenerate video motion prompt for Scene {s_num} ONLY."
+                        st.markdown("#### 🎥 Prompt Video")
+                        p_user_vid = f"Project Context: {st.session_state.show_bible}\nTarget Video Engine: {st.session_state.show_bible.get('video_engine', 'Universal')}\nTarget Scene: {s_num}\nRequested Duration: {st.session_state.show_bible.get('duration_setting', '5 Detik')}\nEXACT SCRIPT: \"{script_txt}\"\nGenerate video motion prompt for Scene {s_num} ONLY."
 
                         if sc["prompt_video"]:
                             st.code(sc["prompt_video"], language="markdown")
