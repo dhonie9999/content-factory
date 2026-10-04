@@ -269,9 +269,9 @@ if "show_bible" not in st.session_state: st.session_state.show_bible = None
 if "scenes" not in st.session_state: st.session_state.scenes = []
 if "characters" not in st.session_state: st.session_state.characters = []
 if "brief_text" not in st.session_state: st.session_state.brief_text = ""
-if "locked_wardrobes" not in st.session_state: st.session_state.locked_wardrobes = {}
-if "project_title" not in st.session_state: st.session_state.project_title = ""
-if "custom_notes" not in st.session_state: st.session_state.custom_notes = ""
+if "reset_count" not in st.session_state: st.session_state.reset_count = 0
+if "input_title_val" not in st.session_state: st.session_state.input_title_val = ""
+if "input_notes_val" not in st.session_state: st.session_state.input_notes_val = ""
 
 # =============================================================================
 # 7. TAHAP AUTENTIKASI / LOGIN & DEVICE BINDING
@@ -397,77 +397,80 @@ else:
 
         st.divider()
 
-        project_title = st.text_input("1. Judul / Ide Utama Video (WAJIB) *", placeholder="Misal: Perjuangan Hidup", key="project_title")
-        custom_notes = st.text_input("2. Detail Cerita / Pesan Khusus AI (Opsional)", placeholder="Misal: Karakter utama berjuang di kota besar", key="custom_notes")
+        # Input teks dengan dynamic key
+        project_title = st.text_input(
+            "1. Judul / Ide Utama Video (WAJIB) *", 
+            value=st.session_state.input_title_val,
+            placeholder="Misal: Linda dan Iwan di Bali", 
+            key=f"proj_title_input_{st.session_state.reset_count}"
+        )
+        custom_notes = st.text_input(
+            "2. Detail Cerita / Pesan Khusus AI (Opsional)", 
+            value=st.session_state.input_notes_val,
+            placeholder="Misal: Pertemuan di Ubud hingga berpisah di bandara", 
+            key=f"custom_notes_input_{st.session_state.reset_count}"
+        )
 
         st.divider()
         st.subheader("🛠 Parameter Visual & Engine")
 
-        selected_type = st.selectbox("Jenis Video", VIDEO_TYPES)
-        final_type = st.text_input("Jenis Video Khusus:", placeholder="Micro-Doc") if selected_type == "✏ Custom Type..." else selected_type
+        selected_type = st.selectbox("Jenis Video", VIDEO_TYPES, key=f"sel_type_{st.session_state.reset_count}")
+        final_type = st.text_input("Jenis Video Khusus:", placeholder="Micro-Doc", key=f"custom_type_{st.session_state.reset_count}") if selected_type == "✏ Custom Type..." else selected_type
 
-        selected_style = st.selectbox("Gaya Visual", VISUAL_STYLES)
-        final_style = st.text_input("Gaya Visual Khusus:", placeholder="Cyberpunk") if selected_style == "✏ Custom Visual Style..." else selected_style
+        selected_style = st.selectbox("Gaya Visual", VISUAL_STYLES, key=f"sel_style_{st.session_state.reset_count}")
+        final_style = st.text_input("Gaya Visual Khusus:", placeholder="Cyberpunk", key=f"custom_style_{st.session_state.reset_count}") if selected_style == "✏ Custom Visual Style..." else selected_style
 
         col_e1, col_e2 = st.columns(2)
         with col_e1:
-            selected_img_engine = st.selectbox("Image Engine", IMAGE_ENGINES)
-            final_img_engine = st.text_input("Image Engine Khusus:", placeholder="Midjourney") if selected_img_engine == "✏ Custom Image Engine..." else selected_img_engine
+            selected_img_engine = st.selectbox("Image Engine", IMAGE_ENGINES, key=f"sel_img_{st.session_state.reset_count}")
+            final_img_engine = st.text_input("Image Engine Khusus:", placeholder="Midjourney", key=f"custom_img_{st.session_state.reset_count}") if selected_img_engine == "✏ Custom Image Engine..." else selected_img_engine
         with col_e2:
-            selected_vid_engine = st.selectbox("Video Engine", VIDEO_ENGINES)
-            final_vid_engine = st.text_input("Video Engine Khusus:", placeholder="Kling") if selected_vid_engine == "✏ Custom Video Engine..." else selected_vid_engine
+            selected_vid_engine = st.selectbox("Video Engine", VIDEO_ENGINES, key=f"sel_vid_{st.session_state.reset_count}")
+            final_vid_engine = st.text_input("Video Engine Khusus:", placeholder="Kling", key=f"custom_vid_{st.session_state.reset_count}") if selected_vid_engine == "✏ Custom Video Engine..." else selected_vid_engine
 
-        selected_ratio = st.selectbox("Aspect Ratio", ASPECT_RATIOS)
-        final_ratio = st.text_input("Ratio Khusus:", placeholder="9:16") if selected_ratio == "✏ Custom Ratio..." else selected_ratio
+        selected_ratio = st.selectbox("Aspect Ratio", ASPECT_RATIOS, key=f"sel_ratio_{st.session_state.reset_count}")
+        final_ratio = st.text_input("Ratio Khusus:", placeholder="9:16", key=f"custom_ratio_{st.session_state.reset_count}") if selected_ratio == "✏ Custom Ratio..." else selected_ratio
 
         st.markdown("---")
         with st.expander("🎥 Kamera & Pencahayaan", expanded=False):
-            selected_cam = st.selectbox("Kamera", CAMERA_SHOT_OPTIONS)
-            final_cam = st.text_input("Kamera Khusus", placeholder="Close-Up") if selected_cam == "✏ Custom Camera Shot..." else selected_cam
+            selected_cam = st.selectbox("Kamera", CAMERA_SHOT_OPTIONS, key=f"sel_cam_{st.session_state.reset_count}")
+            final_cam = st.text_input("Kamera Khusus", placeholder="Close-Up", key=f"custom_cam_{st.session_state.reset_count}") if selected_cam == "✏ Custom Camera Shot..." else selected_cam
 
-            selected_light = st.selectbox("Lighting", LIGHTING_OPTIONS)
-            final_light = st.text_input("Lighting Khusus", placeholder="Moody") if selected_light == "✏ Custom Lighting..." else selected_light
+            selected_light = st.selectbox("Lighting", LIGHTING_OPTIONS, key=f"sel_light_{st.session_state.reset_count}")
+            final_light = st.text_input("Lighting Khusus", placeholder="Moody", key=f"custom_light_{st.session_state.reset_count}") if selected_light == "✏ Custom Lighting..." else selected_light
 
-            selected_color = st.selectbox("Color Grading", COLOR_GRADING_OPTIONS)
-            final_color = st.text_input("Color Khusus", placeholder="Teal & Orange") if selected_color == "✏ Custom Color Grading..." else selected_color
+            selected_color = st.selectbox("Color Grading", COLOR_GRADING_OPTIONS, key=f"sel_color_{st.session_state.reset_count}")
+            final_color = st.text_input("Color Khusus", placeholder="Teal & Orange", key=f"custom_color_{st.session_state.reset_count}") if selected_color == "✏ Custom Color Grading..." else selected_color
 
         st.markdown("---")
-        selected_dur = st.selectbox("Durasi per Adegan", DURATION_OPTIONS)
+        selected_dur = st.selectbox("Durasi per Adegan", DURATION_OPTIONS, key=f"sel_dur_{st.session_state.reset_count}")
         final_duration = selected_dur if selected_dur != "✏ Custom Durasi..." else "5 Detik"
 
-        selected_sc_count = st.selectbox("Jumlah Adegan", SCENE_COUNT_OPTIONS)
+        selected_sc_count = st.selectbox("Jumlah Adegan", SCENE_COUNT_OPTIONS, key=f"sel_sc_cnt_{st.session_state.reset_count}")
         final_scene_count = selected_sc_count if selected_sc_count != "✏ Custom (Maksimal 10)..." else "5 Scene"
 
-        final_voice_mode = st.selectbox("Mode Suara", VOICE_MODE_OPTIONS)
-        selected_lang = st.selectbox("Bahasa Naskah", LANGUAGE_OPTIONS)
+        final_voice_mode = st.selectbox("Mode Suara", VOICE_MODE_OPTIONS, key=f"sel_voice_{st.session_state.reset_count}")
+        selected_lang = st.selectbox("Bahasa Naskah", LANGUAGE_OPTIONS, key=f"sel_lang_{st.session_state.reset_count}")
         final_language = selected_lang if selected_lang != "✏ Custom Bahasa..." else "Bahasa Indonesia"
 
-        selected_model = st.selectbox("Model AI Engine", GROQ_MODELS, index=0)
-
-        st.divider()
-        st.subheader("⏳ Continuity & Time Control")
-        is_time_jump = st.checkbox(
-            "Aktifkan Time Jump / Beda Hari", 
-            value=False, 
-            help="Hilangkan centang jika cerita berlangsung di hari/malam yang sama agar pakaian dan kontinuitas dikunci total."
-        )
+        selected_model = st.selectbox("Model AI Engine", GROQ_MODELS, index=0, key=f"sel_model_{st.session_state.reset_count}")
 
         st.divider()
         st.subheader("👥 Character Management")
         st.caption("Dukung banyak karakter (otomatis disesuaikan cerita).")
 
         with st.form("add_char_form", clear_on_submit=True):
-            c_name = st.text_input("Nama Karakter / Hewan *", placeholder="Misal: Markus / Risma")
+            c_name = st.text_input("Nama Karakter / Hewan *", placeholder="Misal: Linda / Iwan")
             col_c1, col_c2 = st.columns(2)
             with col_c1:
                 c_age = st.text_input("Usia", placeholder="20-an thn")
                 c_gender = st.selectbox("Gender / Jenis", ["Pria / Male", "Wanita / Female", "Hewan / Animal"])
             with col_c2:
-                c_region = st.text_input("Region / Ras", placeholder="Nigerian / Indonesian")
+                c_region = st.text_input("Region / Ras", placeholder="Indonesian / French")
                 c_height = st.text_input("Tinggi / Ukuran", placeholder="Proporsional")
             
-            c_hair = st.text_input("Ciri Rambut/Bulu/Wajah", placeholder="Rambut pendek keriting hitam")
-            c_traits = st.text_input("Kepribadian", placeholder="Ramah / Hangat")
+            c_hair = st.text_input("Ciri Rambut/Bulu/Wajah", placeholder="Rambut pendek hitam / Rambut pirang")
+            c_traits = st.text_input("Kepribadian", placeholder="Kreatif / Ramah")
             add_char_btn = st.form_submit_button("➕ Tambah Karakter")
 
         if add_char_btn:
@@ -497,14 +500,15 @@ else:
         st.divider()
         build_btn = st.button("🚀 BUILD PROJECT BIBLE & SCENES", type="primary")
         
+        # Reset Studio Mutlak
         if st.button("🔄 Reset Studio"):
             st.session_state.show_bible = None
             st.session_state.scenes = []
             st.session_state.characters = []
             st.session_state.brief_text = ""
-            st.session_state.locked_wardrobes = {}
-            st.session_state.project_title = ""
-            st.session_state.custom_notes = ""
+            st.session_state.input_title_val = ""
+            st.session_state.input_notes_val = ""
+            st.session_state.reset_count += 1
             st.rerun()
 
         st.divider()
@@ -519,13 +523,13 @@ else:
                         st.session_state.scenes = proj_data.get("scenes")
                         st.session_state.characters = proj_data.get("characters", [])
                         st.session_state.brief_text = proj_data.get("brief_text", "")
-                        st.session_state.locked_wardrobes = proj_data.get("show_bible", {}).get("default_story_wardrobes", {})
-                        st.session_state.project_title = proj_name
-                        st.session_state.custom_notes = proj_data.get("brief_text", "")
+                        st.session_state.input_title_val = proj_name
+                        st.session_state.input_notes_val = proj_data.get("brief_text", "")
+                        st.session_state.reset_count += 1
                         st.success(f"Proyek '{proj_name}' dimuat!")
                         st.rerun()
                 with col_hist2:
-                    if st.button("🗑️️", key=f"del_hist_{proj_name}", help=f"Hapus proyek {proj_name}"):
+                    if st.button("🗑", key=f"del_hist_{proj_name}", help=f"Hapus proyek {proj_name}"):
                         delete_project_from_history(st.session_state.user_email, proj_name)
                         st.success(f"Proyek '{proj_name}' dihapus!")
                         st.rerun()
@@ -541,16 +545,16 @@ else:
         elif not project_title.strip():
             st.error("⚠ Judul / Ide Utama Video wajib diisi!")
         else:
-            with st.spinner("⏳ Menganalisis Judul, Ekstraksi Karakter Baru, & Meramu Master Brief..."):
+            with st.spinner("⏳ Menganalisis Judul, Ekstraksi Karakter, & Meramu Master Brief..."):
                 
-                # LANGKAH 1: Ekstraksi Karakter Otomatis dari Judul & Detail Cerita
+                # LANGKAH 1: Ekstraksi Karakter Otomatis
                 extract_char_sys = """You are an AI casting director. Analyze the project title and custom story details provided by the user. 
                 Extract the characters mentioned in the story. If the user specifies new characters, create character objects for them.
                 Return a JSON object with a key "characters" containing an array of character objects, where each object has:
                 - name (string)
                 - age (string, e.g., 'early 20s' or '20-an thn')
                 - gender (string, e.g., 'Pria / Male' or 'Wanita / Female')
-                - region (string, e.g., 'Nigerian' or 'Indonesian' or 'British')
+                - region (string, e.g., 'Indonesian' or 'French' or 'Swiss')
                 - height (string, e.g., '170 cm')
                 - hair_face (string, detailed facial and hair description)
                 - traits (string, personality traits)
@@ -571,34 +575,27 @@ else:
                 Your task is to prepare a comprehensive production framework based on the user's title: "{project_title}" and custom notes/story details: "{custom_notes}".
                 
                 MANDATORY & UNBREAKABLE REGIONAL IDENTITY ENFORCEMENT:
-                - You MUST strictly respect and enforce the exact ethnic, national, and physical metadata defined in the Character Input List for every character.
+                - Strictly enforce ethnic, national, gender, age, and physical metadata defined in the Character Input List for every character.
                 
                 MANDATORY PROFESSIONAL CHARACTER REFERENCE BOARD FORMAT:
-                - 'character_cards': Must be an array of objects for each character, with 'name' and 'character_card_prompt'.
-                - STRICT NEUTRAL ANATOMY RULE: DO NOT insert any story elements, plot narration, cafe/rain backgrounds, or story-specific clothes into 'character_card_prompt'!
-                - EVERY character card prompt MUST follow this exact professional model reference sheet layout:
-                  "Character Reference Board of [Character Name] - [Nationality/Region: Age range, Ethnicity metadata, Key personality keywords].
-                  Layout includes multiple visual panels:
+                - 'character_cards': Array of objects for each character, with 'name' and 'character_card_prompt'.
+                - STRICT METADATA HEADER RULE: Each character card prompt MUST START with an explicit metadata text banner directive:
+                  "A professional cinematic Character Reference Sheet of [Name]. Top banner text clearly displays: 'CHARACTER REFERENCE BOARD: [NAME] | GENDER: [GENDER] | AGE: [AGE] | REGION: [REGION] | ETHNICITY: [FACIAL TRAITS]'."
+                - MULTI-PANEL LAYOUT (MANDATORY):
                   1. Left Panel: Full-body view standing neutral pose against a clean studio background.
                   2. Top Center Panel: Close-up front view, neutral expression.
                   3. Top Right Panel: Close-up side profile view.
                   4. Bottom Row Panel: 6 facial expression studies labeled with text: Neutral, Smiling, Laughing, Sad, Angry, Surprised.
-                  Wardrobe strictly neutral: Plain clean white sleeveless tank top (singlet), dark denim knee-length cargo shorts, and classic black-and-white sneakers.
-                  Style: Ultra-photorealistic 8K, crisp studio lighting, neutral light-grey backdrop, razor sharp focus, accurate anatomy without narrative clutter."
+                - STRICT NEUTRAL ANATOMY & WARDROBE: Plain clean white sleeveless tank top (singlet), dark denim knee-length cargo shorts, and classic black-and-white sneakers.
+                - Style: Ultra-photorealistic 8K, crisp studio lighting, neutral light-grey backdrop, razor sharp focus, accurate anatomy without narrative clutter.
                 
-                WARDROBE LOGIC FOR SCENES:
-                - Also output a field 'default_story_wardrobes' as an object mapping each character name to their specific locked clothing outfit for the actual story (e.g. {{"Dhonie": "dark green bomber jacket over white t-shirt, dark slim jeans", "Jess": "cream-colored knit cardigan over navy top, dark jeans"}}).
+                STORY SCENES CREATIVITY:
+                - Allow the AI to write rich, episodic, natural narrative scenes without locked wardrobe restrictions across the story.
                 
                 CRITICAL RULES FOR SYSTEM OUTPUT (JSON format ONLY):
-                1. 'brief_text': Provide an exact conversational greeting brief in Indonesian structured precisely like this:
-                   "Hai AI, siap-siap ya saya akan berikan prompt dari image berseri konten judul {project_title}. Tolong dijaga konsistensinya, baik ketika saya berikan referensi karakter card, maupun ketika saya tidak berikan. Siap-siap saya akan berikan promptnya setelah ini."
-                2. 'show_bible': Must contain:
-                   - 'visual_theme': string describing overall visual tone, cinematic cameras, and color grading.
-                   - 'mood': string describing emotional atmosphere and dramatic lighting style.
-                   - 'continuity_rules': string detailing the unbreakable physical, temporal, and spatial rules.
-                   - 'default_story_wardrobes': object with character-to-outfit mapping.
-                   - 'character_cards': array of professional character sheets.
-                3. 'scenes': Array of objects, each containing 'scene_num' (integer) and 'script_text' (string containing spoken dialogue or voiceover narration). 
+                1. 'brief_text': Provide the exact conversational greeting brief in Indonesian.
+                2. 'show_bible': Must contain 'visual_theme', 'mood', 'continuity_rules', and 'character_cards'.
+                3. 'scenes': Array of objects, each containing 'scene_num' and 'script_text'.
                 Return strictly valid JSON only.
                 """
 
@@ -607,7 +604,6 @@ else:
                 - Title/Idea: {project_title}
                 - Custom Notes: {custom_notes if custom_notes else 'None'}
                 - Characters: {json.dumps(st.session_state.characters)}
-                - Time Jump: {'Active (Multi-day)' if is_time_jump else 'Strict Same-Day/Same-Night Continuity'}
                 - Scene Count: {final_scene_count}
                 - Style: {final_style}, Engine: {final_img_engine}, Ratio: {final_ratio}
                 - Voice Mode: {final_voice_mode}, Language: {final_language}
@@ -624,8 +620,6 @@ else:
                     show_bible_data["duration_setting"] = final_duration
                     show_bible_data["language_setting"] = final_language
                     show_bible_data["voice_mode"] = final_voice_mode
-
-                    st.session_state.locked_wardrobes = show_bible_data.get("default_story_wardrobes", {})
 
                     brief_generated = result.get("brief_text", f"Hai AI, siap-siap ya saya akan berikan prompt dari image berseri konten judul {project_title}. Tolong dijaga konsistensinya, baik ketika saya berikan referensi karakter card, maupun ketika saya tidak berikan. Siap-siap saya akan berikan promptnya setelah ini.")
                     scenes_input = result.get("scenes", [])
@@ -662,29 +656,21 @@ else:
 
         # 2. PROJECT PRODUCTION BIBLE (OTAK & ARSIP PRODUKSI)
         st.subheader("📖 2. Project Production Bible (Otak Kontinuitas & Arsip)")
-        st.info("💡 **Arsip Sutradara:** Ini adalah rangkuman 'otak' yang mengatur tema visual, aturan kontinuitas, dan pakaian paten karakter sepanjang cerita.")
+        st.info("💡 **Arsip Sutradara:** Rangkuman visual, mood, dan aturan kontinuitas dunia cerita.")
         
         bible_summary = f"""[PROJECT PRODUCTION BIBLE: {sb.get('title', 'Untitled')}]
 • Visual Theme: {sb.get('visual_theme', 'Cinematic Photorealistic 8K, 35mm lens')}
 • Mood & Lighting: {sb.get('mood', 'Moody, warm ambient lighting, high contrast')}
-• Continuity Rules: {sb.get('continuity_rules', 'Strict same-day continuity. Consistent blocking and persistent object physics.')}
+• Continuity Rules: {sb.get('continuity_rules', 'Persistent character facial & anatomical identity. Realistic temporal wardrobe logic.')}
 • Aspect Ratio: {sb.get('ratio', '16:9')} | Image Engine: {sb.get('image_engine', 'Universal')} | Video Engine: {sb.get('video_engine', 'Universal')}
-
-[LOCKED STORY WARDROBES]
 """
-        if st.session_state.locked_wardrobes:
-            for char_k, ward_v in st.session_state.locked_wardrobes.items():
-                bible_summary += f"• {char_k}: {ward_v}\n"
-        else:
-            bible_summary += "• Locked to outfits established in Scene 1.\n"
-
         st.code(bible_summary.strip(), language="text")
 
         st.divider()
 
         # 3. CHARACTER REFERENCE CARDS (PROFESIONAL MULTI-PANEL)
         st.subheader("👤 3. Professional Character Reference Board(s) (Validasi Identitas Regional)")
-        st.info("💡 **Langkah Ketiga:** Karakter card profesional (singlet putih & denim cargo shorts) untuk mengunci fitur wajah, ekspresi, dan anatomi.")
+        st.info("💡 **Langkah Ketiga:** Karakter card profesional (singlet putih & denim cargo shorts) murni untuk mengunci fitur wajah, ekspresi, dan anatomi.")
         
         char_cards_list = sb.get('character_cards', [])
         if not char_cards_list:
@@ -700,21 +686,31 @@ else:
 
         st.divider()
 
-        # 4. PROMPT BERSERI DENGAN LOGIKA KONTINUITAS & NASKAH DIALOG/NARASI
+        # 4. PROMPT BERSERI DENGAN LOGIKA WAKTU & NASKAH DIALOG/NARASI
         st.subheader("🎬 4. Prompt Berseri & Naskah per Adegan")
         
-        IMG_PROMPT_SYS = """You are an elite Master Cinematic Image Prompt Engineer.
-DIRECTOR CONTINUITY & SPATIAL RULES (MANDATORY):
-1. WARDROBE LOCK: If 'SAME-DAY/SAME-NIGHT' continuity is indicated, characters MUST wear the EXACT locked wardrobe provided. Never alter or add contradictory clothing.
-2. SPATIAL & EYE-LINE ANCHORING: Ground character orientation clearly in 3D space. When two characters converse or share a table/counter, describe them facing each other directly (e.g. 'seated opposite each other, consistent eye-level contact'). NEVER direct a character's dialogue or attention toward windows, walls, or empty space while speaking to someone.
-3. OBJECT PERSISTENCE & PHYSICALITY: Props (pens, paper, cups, books) must have static physical reality. They must rest stable on table surfaces before/after contact. Do not describe impossible mid-air teleportation.
-Output ONLY the final English cinematic prompt text, rich in lighting, mood, camera framing, and photographic detail."""
+        IMG_PROMPT_SYS = """You are an elite Master Cinematic Image Prompt Engineer for narrative film scenes.
 
-        VID_PROMPT_SYS = """You are an elite Master Cinematic Video Prompt Engineer.
-DIRECTOR CONTINUITY & CAMERA RULES (MANDATORY):
-1. WARDROBE LOCK: If 'SAME-DAY/SAME-NIGHT' continuity is indicated, enforce identical wardrobe descriptions across all scenes without variation.
-2. CONTINUOUS BLOCKING: Characters seated together must face each other throughout the action. Head position and body posture must face the conversation partner, not windows or backgrounds.
-3. FLUID PHYSICAL ACTION: Avoid abrupt prop appearances or vanishing objects. Hand interactions must be grounded with items resting on tables.
+CRITICAL NEGATIVE CONSTRAINTS (ABSOLUTE RULES):
+1. NO CHARACTER BOARDS / NO MODEL SHEETS: NEVER generate reference sheets, split panels, multi-angle layouts, expression grids, turnarounds, or text typography labels. Output MUST describe a single, unified, authentic cinematic camera shot.
+2. IMMERSIVE ENVIRONMENT ONLY: The scene MUST take place entirely within an authentic narrative setting (e.g. real beach, local traditional market, cafe, real living room, taxi). NEVER use a plain photography studio backdrop, white/grey cyclorama, or minimalist studio wall.
+3. NEVER USE REFERENCE ATTIRE IN NARRATIVE SCENES: Under NO circumstances should any character wear the white sleeveless tank top / singlet / cargo shorts from the character reference card! Characters must always wear stylish, believable, cinematic narrative garments appropriate to the setting and culture.
+4. INTELLIGENT NARRATIVE WARDROBE CONTINUITY & TIME-JUMP LOGIC:
+   - READ PREVIOUS SCENE CONTEXT: Check the outfits worn in the immediately preceding scene(s) and analyze the story time passage.
+   - SAME DAY / CONTINUOUS ACTION: If this scene takes place on the same day, immediately following, or closely after previous scenes (and characters did not go to change), MAINTAIN the exact same outfit from the previous scene for visual continuity.
+   - NEW DAY / TIME TRANSITION / WARDROBE CHANGE: If the script or action indicates a new day (e.g., 'keesokan paginya', 'hari ketiga', 'next morning', 'hari terakhir', 'later that week') OR the narrative mentions changing clothes, you MUST design a FRESH, NEW, stylish, context-appropriate outfit fitting the new day and activity (e.g., sunrise beach casual, morning market wear, yoga sportswear, travel attire).
+5. SPATIAL & EYE-LINE ANCHORING: Ground character orientation clearly in 3D space. Characters interacting must face each other directly with natural eye contact.
+6. OBJECT PERSISTENCE & PHYSICALITY: Small props (cups, pens, baskets, books) must have static physical reality resting stably on tables or surfaces.
+
+Output ONLY the final descriptive English cinematic prompt text, rich in lighting, mood, camera lens (e.g. 35mm lens, shallow depth of field), and authentic human emotion."""
+
+        VID_PROMPT_SYS = """You are an elite Master AI Video Prompt Engineer for tools like Google Veo, Kling, Flow, and Runway.
+
+CRITICAL FIRST-FRAME CONTINUATION RULES:
+1. NO GHOST CLONES / NO DUPLICATE SUBJECTS: When starting from the initial image frame, treat the people already visible as the established primary characters. Do NOT introduce or describe a duplicate version of the main character into the scene.
+2. SEAMLESS ACTION CONTINUATION: Describe natural, organic character motion continuing directly from the exact pose established in the initial frame (subtle head turn, lifting the cup, smiling in reaction, natural eye blink).
+3. CINEMATIC CAMERA MOTION: Direct smooth cinematic camera movement (e.g. subtle slow push-in, gentle arc shot, shallow depth of field shift).
+
 Output ONLY the final English cinematic video generation prompt."""
 
         for sc_idx, sc in enumerate(st.session_state.scenes):
@@ -728,27 +724,34 @@ Output ONLY the final English cinematic video generation prompt."""
                     st.markdown(f"### 🟢 Adegan {s_num}")
                     script_txt = sc['script_text'] if sc['script_text'] else "N/A"
                     
-                    # Kotak Naskah / Dialog dengan Tombol Salin per Adegan
                     st.markdown("🎙 **Naskah / Dialog Adegan:**")
                     st.code(script_txt, language="text")
 
-                    # Susun payload kontinuitas yang solid
-                    continuity_mode_text = (
-                        "STRICT SAME-DAY / SAME-NIGHT CONTINUITY: Characters MUST retain identical clothing throughout all scenes. No wardrobe changes permitted." 
-                        if not is_time_jump 
-                        else "TIME-JUMP ACTIVE: Realistic wardrobe adjustments between days are allowed."
-                    )
-                    
-                    wardrobe_context = json.dumps(st.session_state.locked_wardrobes) if st.session_state.locked_wardrobes else "Maintain wardrobe described in scene 1."
-                    
+                    # Kumpulkan riwayat adegan sebelumnya agar AI tahu baju & alur waktu sebelumnya
+                    prior_context_list = []
+                    for p_i in range(max(0, sc_idx - 2), sc_idx):
+                        prev_sc = st.session_state.scenes[p_i]
+                        prior_context_list.append(f"Scene {prev_sc['scene_num']} Script: {prev_sc['script_text']} | Established Visual Prompt: {prev_sc['prompt_image'][:280]}...")
+                    prior_context_str = "\n".join(prior_context_list) if prior_context_list else "This is Scene 1 (Opening scene). Establish stylish opening day outfits suited for the location and story."
+
                     common_context = f"""
-Scene Number: {s_num}
-Action/Script: {script_txt}
-Continuity Directive: {continuity_mode_text}
-Locked Story Wardrobes: {wardrobe_context}
-Characters Metadata: {json.dumps(st.session_state.characters)}
-Spatial Direction: Ground characters clearly facing their interaction partner. Small props must rest on surfaces.
-Visual Style: {sb.get('visual_theme', 'Cinematic Photorealistic 8K, 35mm lens')}
+PROJECT TITLE: {sb.get('title', '')}
+CURRENT SCENE NUMBER: {s_num}
+CURRENT SCRIPT / ACTION: {script_txt}
+
+PREVIOUS SCENE CHRONOLOGY & ESTABLISHED OUTFITS:
+{prior_context_str}
+
+CHARACTERS METADATA:
+{json.dumps(st.session_state.characters)}
+
+VISUAL & CINEMATIC SPECS:
+- Style: {sb.get('visual_theme', 'Cinematic Photorealistic 8K, 35mm lens')}
+- Mood & Lighting: {sb.get('mood', 'Moody, warm ambient lighting, high contrast')}
+- Aspect Ratio: {sb.get('ratio', '16:9')}
+
+DIRECTIVE FOR WARDROBE:
+Analyze CURRENT SCRIPT vs PREVIOUS SCENE. If time jump/new day/clothing change occurred, design fresh stylish attire. If continuous same-day action, strictly match the previous scene's outfit. NEVER use white tank tops or studio attire.
 """
 
                     col_p1, col_p2 = st.columns(2)
@@ -760,12 +763,14 @@ Visual Style: {sb.get('visual_theme', 'Cinematic Photorealistic 8K, 35mm lens')}
                                 new_p = call_groq_safe(active_activation_key, IMG_PROMPT_SYS, common_context, selected_model, is_json=False)
                                 if new_p:
                                     st.session_state.scenes[sc_idx]["prompt_image"] = new_p.strip()
+                                    save_project_to_history(st.session_state.user_email, project_title, sb, st.session_state.scenes, st.session_state.characters, st.session_state.brief_text)
                                     st.rerun()
                         else:
                             if st.button(f"✨ Generate Image {s_num}", key=f"gen_img_{s_num}", type="primary"):
                                 new_p = call_groq_safe(active_activation_key, IMG_PROMPT_SYS, common_context, selected_model, is_json=False)
                                 if new_p:
                                     st.session_state.scenes[sc_idx]["prompt_image"] = new_p.strip()
+                                    save_project_to_history(st.session_state.user_email, project_title, sb, st.session_state.scenes, st.session_state.characters, st.session_state.brief_text)
                                     st.rerun()
 
                     with col_p2:
@@ -773,36 +778,78 @@ Visual Style: {sb.get('visual_theme', 'Cinematic Photorealistic 8K, 35mm lens')}
                         if sc["prompt_video"]:
                             st.code(sc["prompt_video"], language="text")
                             if st.button(f"🔄 Regenerate Video {s_num}", key=f"regen_vid_{s_num}"):
-                                new_vp = call_groq_safe(active_activation_key, VID_PROMPT_SYS, common_context, selected_model, is_json=False)
+                                video_context = f"""
+SCENE CONTEXT:
+Scene Number: {s_num}
+Script/Action: {script_txt}
+First Frame Image Reference: {sc.get('prompt_image', 'Scene setting with characters')}
+Characters: {json.dumps(st.session_state.characters)}
+"""
+                                new_vp = call_groq_safe(active_activation_key, VID_PROMPT_SYS, video_context, selected_model, is_json=False)
                                 if new_vp:
                                     st.session_state.scenes[sc_idx]["prompt_video"] = new_vp.strip()
                                     if sc_idx + 1 < len(st.session_state.scenes):
                                         st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
+                                    save_project_to_history(st.session_state.user_email, project_title, sb, st.session_state.scenes, st.session_state.characters, st.session_state.brief_text)
                                     st.rerun()
                         else:
                             if st.button(f"✨ Generate Video {s_num}", key=f"gen_vid_{s_num}", type="primary"):
-                                new_vp = call_groq_safe(active_activation_key, VID_PROMPT_SYS, common_context, selected_model, is_json=False)
+                                video_context = f"""
+SCENE CONTEXT:
+Scene Number: {s_num}
+Script/Action: {script_txt}
+First Frame Image Reference: {sc.get('prompt_image', 'Scene setting with characters')}
+Characters: {json.dumps(st.session_state.characters)}
+"""
+                                new_vp = call_groq_safe(active_activation_key, VID_PROMPT_SYS, video_context, selected_model, is_json=False)
                                 if new_vp:
                                     st.session_state.scenes[sc_idx]["prompt_video"] = new_vp.strip()
                                     if sc_idx + 1 < len(st.session_state.scenes):
                                         st.session_state.scenes[sc_idx + 1]["is_unlocked"] = True
+                                    save_project_to_history(st.session_state.user_email, project_title, sb, st.session_state.scenes, st.session_state.characters, st.session_state.brief_text)
                                     st.rerun()
 
         # -----------------------------------------------------------------------------
-        # 5. MASTER AUDIO EXPORT (COPY ALL NASKAH)
+        # 5. MASTER EXPORT WORKSPACE (AUDIO, ALL IMAGES, ALL VIDEOS)
         # -----------------------------------------------------------------------------
         st.divider()
-        st.subheader("🎙️ 5. Master Audio Script (Copy All Naskah)")
-        st.info("💡 **Audio AI Workflow:** Salin seluruh naskah di bawah ini sekali klik untuk di-paste ke platform Voice AI / TTS (ElevenLabs, PlayHT, dll.).")
+        st.subheader("📦 5. Master Production Export (Batch Copy)")
         
-        all_scripts_list = []
-        for sc in st.session_state.scenes:
-            s_text = sc.get('script_text', '').strip()
-            if s_text:
-                all_scripts_list.append(f"[Scene {sc['scene_num']}]\n{s_text}")
+        tab_audio, tab_img, tab_vid = st.tabs(["🎙️ Master Audio Script", "🖼️ Copy All Image Prompts", "🎥 Copy All Video Prompts"])
         
-        full_audio_script = "\n\n".join(all_scripts_list) if all_scripts_list else "Belum ada naskah narasi/dialog."
-        st.code(full_audio_script, language="text")
+        with tab_audio:
+            st.info("💡 **Audio AI Workflow:** Salin seluruh naskah di bawah ini sekali klik untuk di-paste ke platform Voice AI / TTS (ElevenLabs, PlayHT, dll.).")
+            all_scripts_list = []
+            for sc in st.session_state.scenes:
+                s_text = sc.get('script_text', '').strip()
+                if s_text:
+                    all_scripts_list.append(f"[Scene {sc['scene_num']}]\n{s_text}")
+            full_audio_script = "\n\n".join(all_scripts_list) if all_scripts_list else "Belum ada naskah narasi/dialog."
+            st.code(full_audio_script, language="text")
+
+        with tab_img:
+            st.info("💡 **Batch Image Workflow:** Salin seluruh prompt gambar yang sudah digenerate dengan penanda judul adegan yang rapi.")
+            all_imgs_list = []
+            for sc in st.session_state.scenes:
+                p_img = sc.get('prompt_image', '').strip()
+                if p_img:
+                    all_imgs_list.append(f"=== [SCENE {sc['scene_num']}: IMAGE PROMPT] ===\n{p_img}")
+                else:
+                    all_imgs_list.append(f"=== [SCENE {sc['scene_num']}: IMAGE PROMPT] ===\n(Prompt belum di-generate)")
+            full_imgs_script = "\n\n".join(all_imgs_list) if all_imgs_list else "Belum ada prompt gambar."
+            st.code(full_imgs_script, language="text")
+
+        with tab_vid:
+            st.info("💡 **Batch Video Workflow:** Salin seluruh prompt video yang sudah digenerate dengan penanda judul adegan yang rapi.")
+            all_vids_list = []
+            for sc in st.session_state.scenes:
+                p_vid = sc.get('prompt_video', '').strip()
+                if p_vid:
+                    all_vids_list.append(f"=== [SCENE {sc['scene_num']}: VIDEO PROMPT] ===\n{p_vid}")
+                else:
+                    all_vids_list.append(f"=== [SCENE {sc['scene_num']}: VIDEO PROMPT] ===\n(Prompt belum di-generate)")
+            full_vids_script = "\n\n".join(all_vids_list) if all_vids_list else "Belum ada prompt video."
+            st.code(full_vids_script, language="text")
 
     else:
         st.info("👈 Masukkan **Judul Proyek** & **Detail Cerita** di Sidebar, lalu klik **BUILD PROJECT BIBLE & SCENES** untuk mulai!")
