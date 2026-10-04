@@ -374,6 +374,27 @@ else:
     # SIDEBAR STUDIO
     with st.sidebar:
         st.subheader("⚙️ Studio Control Panel")
+
+        # MENU API KEYS
+        with st.expander("🔑 API KEYS", expanded=False):
+            st.caption("Ganti atau perbarui API Key Groq Anda:")
+            st.markdown("""
+                <div style="font-size: 0.8rem; color: #bbb; margin-bottom: 8px;">
+                    💡 <b>Aktivasi API Key:</b> Buka <a href="https://console.groq.com" target="_blank" style="color: #ff4b4b;">console.groq.com</a> &gt; Menu <b>API Keys</b> &gt; Salin kode (diawali <code>gsk_</code>).
+                </div>
+            """, unsafe_allow_html=True)
+            new_api_input = st.text_input("Groq API Key Baru:", value=active_activation_key, type="password", key="sidebar_apikey_input")
+            if st.button("Simpan & Update Key"):
+                clean_new_key = new_api_input.strip()
+                if clean_new_key.startswith("gsk_"):
+                    st.session_state.local_api_key = clean_new_key
+                    save_device_local_apikey(st.session_state.user_email, clean_new_key)
+                    st.success("✅ API Key berhasil diperbarui & disimpan!")
+                    time.sleep(1)
+                    st.rerun()
+                else:
+                    st.error("❌ API Key tidak valid! Harus diawali dengan 'gsk_'")
+
         st.divider()
 
         project_title = st.text_input("1. Judul / Ide Utama Video (WAJIB) *", placeholder="Misal: Perjuangan Hidup", key="project_title")
@@ -504,7 +525,7 @@ else:
                         st.success(f"Proyek '{proj_name}' dimuat!")
                         st.rerun()
                 with col_hist2:
-                    if st.button("🗑️", key=f"del_hist_{proj_name}", help=f"Hapus proyek {proj_name}"):
+                    if st.button("🗑️️", key=f"del_hist_{proj_name}", help=f"Hapus proyek {proj_name}"):
                         delete_project_from_history(st.session_state.user_email, proj_name)
                         st.success(f"Proyek '{proj_name}' dihapus!")
                         st.rerun()
